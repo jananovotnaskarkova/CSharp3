@@ -2,15 +2,6 @@ namespace Greed;
 
 public class Play
 {
-    private static List<int> RollList;
-    private int Result;
-
-    public Play(List<int> rolllist, int result)
-    {
-        RollList = rolllist;
-        Result = result;
-    }
-
     public static List<int> Roll(int diceCount)
     {
         Random random = new();
