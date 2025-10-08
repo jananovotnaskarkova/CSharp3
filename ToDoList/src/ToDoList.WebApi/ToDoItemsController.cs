@@ -94,6 +94,7 @@ public class ToDoItemsController : ControllerBase
     {
         //create domain object from request
         var itemUpdated = request.ToDomain();
+        itemUpdated.ToDoItemId = toDoItemId;
 
         //try to update an item
         try
