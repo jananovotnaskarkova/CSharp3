@@ -6,22 +6,16 @@ using System.Text.RegularExpressions;
 
 public class Game
 {
-    private static string word;
-
-    private static List<char> hiddenWord;
+    private static string? word;
+    private static List<char>? hiddenWord;
     private static int numberOfLifes = 10;
-    private static bool gameInProgress = false;
-    private static List<string> guessedLettersIncorrect = new List<string>();
-    private static List<string> guessedLettersCorrect = new List<string>();
+    private static bool gameInProgress;
+    private static List<string> guessedLettersIncorrect = [];
+    private static List<string> guessedLettersCorrect = [];
+    private static string? letter;
+    private static string? upperLetter;
 
-    // public Game(string word, int numberOfLifes, bool gameInProgress)
-    // {
-    //     Word = word;
-    //     NumberOfLifes = numberOfLifes;
-    //     GameInProgress = gameInProgress;
-    // }
-
-    private static List<string> listOfWords = new List<string> { "KVETINA", "PRIRODA", "BYDLENI" };
+    private static List<string> listOfWords = ["KVETINA", "PRIRODA", "BYDLENI"];
 
     private static string SelectNewWord()
     {
@@ -29,10 +23,10 @@ public class Game
         return listOfWords[r.Next(0, listOfWords.Count)];
     }
 
-    public static void StartGame()
+    public static void Play()
     {
         word = SelectNewWord();
-        hiddenWord = word.ToCharArray().Select(c => '*').ToList();
+        hiddenWord = [.. word.ToCharArray().Select(c => '*')];
         Console.WriteLine("Vitej ve hre Hangman!");
         Console.WriteLine("-------------------------------");
         Console.WriteLine($"Slovo ma {word.Length} pismen");
@@ -40,23 +34,23 @@ public class Game
         Console.WriteLine($"Mas {numberOfLifes} zivotu");
         Console.WriteLine("-------------------------------");
         gameInProgress = true;
-        Guess();
+        Guess(hiddenWord);
     }
 
-    public static void Guess()
+    public static void Guess(List<char> hiddenWord)
     {
         while (gameInProgress)
         {
             Console.WriteLine("Zadej pismeno:");
 
             // Read input, check if valid and not guessed before, otherwise ask for new input
-            string letter = GetInput();
+            letter = GetInput();
 
             // Convert to upper case
-            string upperLetter = letter.ToUpper(CultureInfo.CurrentCulture);
+            upperLetter = letter.ToUpper(CultureInfo.CurrentCulture);
 
             // Process the letter, check if in word, update hidden word, if not in word, decrease lifes
-            ProcessLetter(upperLetter);
+            ProcessLetter();
 
             Console.WriteLine("-------------------------------");
             Console.WriteLine(string.Join("", hiddenWord));
@@ -92,7 +86,7 @@ public class Game
 
         while (!correct_input)
         {
-            letter = Console.ReadLine();
+            letter = Console.ReadLine() ?? string.Empty;
 
             if (Regex.IsMatch(letter, @"^[a-zA-Z]+$") && letter.Length == 1)
             {
@@ -112,15 +106,15 @@ public class Game
         return letter;
     }
 
-    public static void ProcessLetter(string upperLetter)
+    public static void ProcessLetter()
     {
         if (word.Contains(upperLetter))
         {
-            int index = word.IndexOf(upperLetter);
+            int index = word.IndexOf(upperLetter, StringComparison.Ordinal);
             while (index != -1)
             {
                 hiddenWord[index] = upperLetter.ToCharArray()[0];
-                index = word.IndexOf(upperLetter, index + 1);
+                index = word.IndexOf(upperLetter, index + 1, StringComparison.Ordinal);
             }
             guessedLettersCorrect.Add(upperLetter);
             Console.WriteLine($"Spravne, slovo obsahuje pismeno {upperLetter}");

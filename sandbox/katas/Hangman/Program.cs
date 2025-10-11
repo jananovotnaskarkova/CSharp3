@@ -1,4 +1,4 @@
 ﻿using Hangman;
 
-Game.StartGame();
+Game.Play();
 
