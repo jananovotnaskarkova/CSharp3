@@ -1,0 +1,4 @@
+﻿using Hangman;
+
+Game.Play();
+
