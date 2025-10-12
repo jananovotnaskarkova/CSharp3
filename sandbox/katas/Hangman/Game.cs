@@ -1,6 +1,5 @@
 namespace Hangman;
 
-using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -58,7 +57,7 @@ public class Game
             // Print previous guesses
             if (guessedLettersIncorrect.Count > 0)
             {
-                Console.WriteLine("Predchozi pokusy: " + string.Join(", ", guessedLettersIncorrect));
+                Console.WriteLine("Predchozi neuspesne pokusy: " + string.Join(", ", guessedLettersIncorrect));
             }
 
             // Print number of lifes
@@ -127,5 +126,3 @@ public class Game
         }
     }
 }
-
-
