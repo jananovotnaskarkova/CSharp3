@@ -38,7 +38,10 @@ public class ToDoItemsController : ControllerBase
         }
 
         //respond to client
-        return CreatedAtAction(actionName: item.Name, value: $"http://localhost:5000/api/ToDoItems/{item.ToDoItemId}"); //201
+        return CreatedAtAction(actionName: nameof(ReadById), // Which method to use to get the resource
+                               routeValues: new { toDoItemId = item.ToDoItemId }, // Parameters needed to call that method
+                               value: ToDoItemGetResponseDto.FromDomain(item) // The created item to return
+                               ); //201
     }
 
     [HttpGet]
@@ -47,15 +50,8 @@ public class ToDoItemsController : ControllerBase
         //try to read all items
         try
         {
-            if (items.Count == 0)
-            {
-                return NotFound(); //404
-            }
-            else
-            {
-                var dtos = items.Select(ToDoItemGetResponseDto.FromDomain).ToList();
-                return Ok(dtos); //200 with data
-            }
+            var dtos = items.Select(ToDoItemGetResponseDto.FromDomain).ToList();
+            return Ok(dtos); //200 with data
         }
         catch (Exception ex)
         {
@@ -110,7 +106,8 @@ public class ToDoItemsController : ControllerBase
             {
                 //update the item at the found index
                 items[index] = itemUpdated;
-                return NoContent(); //204
+                var dto = ToDoItemGetResponseDto.FromDomain(items[index]);
+                return Ok(dto); //200
             }
         }
         catch (Exception ex)
