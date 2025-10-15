@@ -8,7 +8,7 @@ using ToDoList.Domain.Models;
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    private static List<ToDoItem> items = [];
+    private readonly List<ToDoItem> items = [];
 
     [HttpPost]
     public IActionResult Create(ToDoItemCreateRequestDto request) //pouzijeme DTO = Data Transfer Object
@@ -45,7 +45,7 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Read()
+    public ActionResult<IEnumerable<ToDoItemGetResponseDto>> Read()
     {
         //try to read all items
         try
@@ -60,7 +60,7 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpGet("{toDoItemId:int}")]
-    public IActionResult ReadById(int toDoItemId)
+    public ActionResult<ToDoItemGetResponseDto> ReadById(int toDoItemId)
     {
         //try to read an item
         try
@@ -86,7 +86,7 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpPut("{toDoItemId:int}")]
-    public IActionResult UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
+    public ActionResult<ToDoItemGetResponseDto> UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
     {
         //create domain object from request
         var itemUpdated = request.ToDomain();
@@ -132,7 +132,7 @@ public class ToDoItemsController : ControllerBase
             else
             {
                 //delete the item
-                _ = items.Remove(itemToDelete);
+                items.Remove(itemToDelete);
                 return NoContent(); //204
             }
         }
@@ -141,4 +141,8 @@ public class ToDoItemsController : ControllerBase
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
     }
+
+    public void AddItemToStorage(ToDoItem item) => items.Add(item);
 }
+
+
