@@ -8,7 +8,7 @@ using ToDoList.Domain.Models;
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    private static List<ToDoItem> items = [];
+    public readonly List<ToDoItem> items = [];
 
     [HttpPost]
     public IActionResult Create(ToDoItemCreateRequestDto request) //pouzijeme DTO = Data Transfer Object
@@ -86,7 +86,7 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpPut("{toDoItemId:int}")]
-    public IActionResult UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
+    public ActionResult<ToDoItemGetResponseDto> UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
     {
         //create domain object from request
         var itemUpdated = request.ToDomain();
@@ -132,7 +132,7 @@ public class ToDoItemsController : ControllerBase
             else
             {
                 //delete the item
-                _ = items.Remove(itemToDelete);
+                items.Remove(itemToDelete);
                 return NoContent(); //204
             }
         }
@@ -142,10 +142,7 @@ public class ToDoItemsController : ControllerBase
         }
     }
 
-    public void AddItemToStorage(ToDoItem item)
-    {
-        items.Add(item);
-    }
+    public void AddItemToStorage(ToDoItem item) => items.Add(item);
 }
 
 
