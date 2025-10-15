@@ -24,7 +24,7 @@ public class PutTests
     private static readonly TodoItemUpdateRequestDto ToDoItem3 = new(Name: "jmeno3", Description: "popis3", IsCompleted: false);
 
     [Fact]
-    public void Update_ReturnUpdatedItems()
+    public void Update_ReturnsUpdatedItems()
     {
         // Arrange
         var controller = new ToDoItemsController();

@@ -29,14 +29,14 @@ public class PostTests
         Assert.IsType<CreatedAtActionResult>(resultCreate1); // the result should be of type CreatedAtActionResult
         Assert.IsType<CreatedAtActionResult>(resultCreate2); // the result should be of type CreatedAtActionResult
 
-        var toDo1 = controller.ReadById(1).GetValue();
+        var toDo1 = valueRead.First();
         // check its properties
         Assert.Equal(1, toDo1.Id);
         Assert.Equal("jmeno1", toDo1.Name);
         Assert.Equal("popis1", toDo1.Description);
         Assert.False(toDo1.IsCompleted);
 
-        var toDo2 = controller.ReadById(2).GetValue();
+        var toDo2 = valueRead.Last();
         // check its properties
         Assert.Equal(2, toDo2.Id);
         Assert.Equal("jmeno2", toDo2.Name);

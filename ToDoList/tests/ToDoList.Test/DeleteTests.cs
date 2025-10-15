@@ -26,12 +26,11 @@ public class DeleteTests
     {
         // Arrange
         var controller = new ToDoItemsController();
-
         controller.AddItemToStorage(ToDoItem1);
         controller.AddItemToStorage(ToDoItem2);
 
         // Act
-        var resultDeletion = controller.DeleteById(1); // ActionResult
+        var resultDelete = controller.DeleteById(1); // IActionResult
         var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
@@ -39,7 +38,7 @@ public class DeleteTests
         Assert.NotNull(valueRead); // the returned collection should not be null
         Assert.Single(valueRead); // we expect exactly 1 item remaining
 
-        Assert.IsType<NoContentResult>(resultDeletion); // the result should be of type NoContentResult
+        Assert.IsType<NoContentResult>(resultDelete); // the result should be of type NoContentResult
 
         // Assert properties of the remaining item
         var singleItem = valueRead.Single();
@@ -58,7 +57,7 @@ public class DeleteTests
         controller.AddItemToStorage(ToDoItem2);
 
         // Act
-        var resultDeletion = controller.DeleteById(3); // ActionResult
+        var resultDelete = controller.DeleteById(3); // IActionResult
         var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
@@ -66,6 +65,6 @@ public class DeleteTests
         Assert.NotNull(valueRead); // the returned collection should not be null
         Assert.Equal(2, valueRead.Count()); // both items should remain
 
-        Assert.IsType<NotFoundResult>(resultDeletion); // the result should be of type NotFoundResult
+        Assert.IsType<NotFoundResult>(resultDelete); // the result should be of type NotFoundResult
     }
 }
