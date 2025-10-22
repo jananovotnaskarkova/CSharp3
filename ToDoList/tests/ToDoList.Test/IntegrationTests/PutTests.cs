@@ -69,6 +69,7 @@ public class PutTests
         // Act
         var result = controllerTest.UpdateById(3, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
+
         // Assert
         Assert.Null(value); // the returned item should be null since the updated item does not exist
 
