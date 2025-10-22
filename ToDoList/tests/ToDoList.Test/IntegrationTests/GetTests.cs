@@ -2,18 +2,20 @@ namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
+using ToDoList.Persistence;
 using ToDoList.WebApi;
 
 public class GetTests
 {
-    private static readonly ToDoItem ToDoItem1 = new()
+    private readonly string dataPath = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+    private readonly ToDoItem toDoItem1 = new()
     {
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
         IsCompleted = false
     };
-    private static readonly ToDoItem ToDoItem2 = new()
+    private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
@@ -25,12 +27,14 @@ public class GetTests
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.ToDoItems.Add(toDoItem1);
+        contextTest.ToDoItems.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
-        var result = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var result = controllerTest.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var value = result.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -52,18 +56,25 @@ public class GetTests
         Assert.Equal("jmeno2", lastToDo.Name);
         Assert.Equal("popis2", lastToDo.Description);
         Assert.True(lastToDo.IsCompleted);
+
+        // Cleanup
+        contextTest.ToDoItems.Remove(toDoItem1);
+        contextTest.ToDoItems.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 
     [Fact]
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.ToDoItems.Add(toDoItem1);
+        contextTest.ToDoItems.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
-        var result = controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
+        var result = controllerTest.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
@@ -76,23 +87,36 @@ public class GetTests
         Assert.Equal("jmeno1", value.Name);
         Assert.Equal("popis1", value.Description);
         Assert.False(value.IsCompleted);
+
+        // Cleanup
+        contextTest.ToDoItems.Remove(toDoItem1);
+        contextTest.ToDoItems.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 
     [Fact]
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.ToDoItems.Add(toDoItem1);
+        contextTest.ToDoItems.Add(toDoItem2);
+        contextTest.SaveChanges();
+
 
         // Act
-        var result = controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
+        var result = controllerTest.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
         Assert.Null(value); // the returned item should be null since the item does not exist
 
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
+
+        // Cleanup
+        contextTest.ToDoItems.Remove(toDoItem1);
+        contextTest.ToDoItems.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 }
