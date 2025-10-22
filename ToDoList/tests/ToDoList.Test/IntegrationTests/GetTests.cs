@@ -2,10 +2,13 @@ namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
+using ToDoList.Persistence;
 using ToDoList.WebApi;
 
 public class GetTests
 {
+    private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
+    private readonly ToDoItemsController controllerTest = new(ContextTest);
     private static readonly ToDoItem ToDoItem1 = new()
     {
         ToDoItemId = 1,
@@ -25,12 +28,12 @@ public class GetTests
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        ContextTest.Add(ToDoItem1);
+        ContextTest.Add(ToDoItem2);
+        ContextTest.SaveChanges();
 
         // Act
-        var result = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var result = controllerTest.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var value = result.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -52,18 +55,23 @@ public class GetTests
         Assert.Equal("jmeno2", lastToDo.Name);
         Assert.Equal("popis2", lastToDo.Description);
         Assert.True(lastToDo.IsCompleted);
+
+        // Cleanup
+        ContextTest.Remove(ToDoItem1);
+        ContextTest.Remove(ToDoItem2);
+        ContextTest.SaveChanges();
     }
 
     [Fact]
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        ContextTest.Add(ToDoItem1);
+        ContextTest.Add(ToDoItem2);
+        ContextTest.SaveChanges();
 
         // Act
-        var result = controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
+        var result = controllerTest.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
@@ -76,23 +84,34 @@ public class GetTests
         Assert.Equal("jmeno1", value.Name);
         Assert.Equal("popis1", value.Description);
         Assert.False(value.IsCompleted);
+
+        // Cleanup
+        ContextTest.Remove(ToDoItem1);
+        ContextTest.Remove(ToDoItem2);
+        ContextTest.SaveChanges();
     }
 
     [Fact]
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        ContextTest.Add(ToDoItem1);
+        ContextTest.Add(ToDoItem2);
+        ContextTest.SaveChanges();
+
 
         // Act
-        var result = controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
+        var result = controllerTest.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
         Assert.Null(value); // the returned item should be null since the item does not exist
 
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
+
+        // Cleanup
+        ContextTest.Remove(ToDoItem1);
+        ContextTest.Remove(ToDoItem2);
+        ContextTest.SaveChanges();
     }
 }

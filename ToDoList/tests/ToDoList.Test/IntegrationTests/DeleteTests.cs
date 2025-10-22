@@ -2,10 +2,13 @@ namespace ToDoList.Test;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
+using ToDoList.Persistence;
 using ToDoList.WebApi;
 
 public class DeleteTests
 {
+    private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
+    private readonly ToDoItemsController controllerTest = new(ContextTest);
     private static readonly ToDoItem ToDoItem1 = new()
     {
         ToDoItemId = 1,
@@ -25,13 +28,13 @@ public class DeleteTests
     public void Delete_DeleteOneItemById()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        ContextTest.Add(ToDoItem1);
+        ContextTest.Add(ToDoItem2);
+        ContextTest.SaveChanges();
 
         // Act
-        var resultDelete = controller.DeleteById(1); // IActionResult
-        var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultDelete = controllerTest.DeleteById(1); // IActionResult
+        var resultRead = controllerTest.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -46,19 +49,23 @@ public class DeleteTests
         Assert.Equal("jmeno2", singleItem.Name);
         Assert.Equal("popis2", singleItem.Description);
         Assert.True(singleItem.IsCompleted);
+
+        // Cleanup
+        ContextTest.Remove(ToDoItem2);
+        ContextTest.SaveChanges();
     }
 
     [Fact]
     public void Delete_ReturnsNotFound()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        ContextTest.Add(ToDoItem1);
+        ContextTest.Add(ToDoItem2);
+        ContextTest.SaveChanges();
 
         // Act
-        var resultDelete = controller.DeleteById(3); // IActionResult
-        var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultDelete = controllerTest.DeleteById(3); // IActionResult
+        var resultRead = controllerTest.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -66,5 +73,10 @@ public class DeleteTests
         Assert.Equal(2, valueRead.Count()); // both items should remain
 
         Assert.IsType<NotFoundResult>(resultDelete); // the result should be of type NotFoundResult
+
+        // Cleanup
+        ContextTest.Remove(ToDoItem1);
+        ContextTest.Remove(ToDoItem2);
+        ContextTest.SaveChanges();
     }
 }

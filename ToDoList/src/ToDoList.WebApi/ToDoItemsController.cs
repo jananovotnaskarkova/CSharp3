@@ -17,7 +17,7 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(ToDoItemCreateRequestDto request) //pouzijeme DTO = Data Transfer Object
+    public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request) //pouzijeme DTO = Data Transfer Object
     {
         //create domain object from request
         var item = request.ToDomain();
@@ -82,25 +82,25 @@ public class ToDoItemsController : ControllerBase
     {
         //create domain object from request
         var itemUpdated = request.ToDomain();
-        int numberOfRowsUpdated;
+        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == toDoItemId);
 
         //try to update an item
         try
         {
-            numberOfRowsUpdated = context.ToDoItems
-            .Where(i => i.ToDoItemId == toDoItemId)
-            .ExecuteUpdate(x => x
-                .SetProperty(item => item.Name, itemUpdated.Name)
-                .SetProperty(item => item.Description, itemUpdated.Description)
-                .SetProperty(item => item.IsCompleted, itemUpdated.IsCompleted)
-            );
+            if (item != null)
+            {
+                item.Name = itemUpdated.Name;
+                item.Description = itemUpdated.Description;
+                item.IsCompleted = itemUpdated.IsCompleted;
+                context.SaveChanges();
+            }
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
         //respond to client
-        return (numberOfRowsUpdated is 0)
+        return (item is null)
             ? NotFound() //404
             : Ok(ToDoItemGetResponseDto.FromDomain(context.ToDoItems.Find(toDoItemId))); //200 with data
     }
