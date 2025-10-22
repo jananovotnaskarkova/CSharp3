@@ -114,7 +114,7 @@ public class ToDoItemsController : ControllerBase
         {
             if (item != null)
             {
-                context.Remove(item);
+                context.ToDoItems.Remove(item);
                 context.SaveChanges();
             }
         }

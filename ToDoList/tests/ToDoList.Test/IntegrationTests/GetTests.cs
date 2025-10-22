@@ -29,8 +29,8 @@ public class GetTests
         // Arrange
         var contextTest = new ToDoItemsContext(dataPath);
         var controllerTest = new ToDoItemsController(contextTest);
-        contextTest.Add(toDoItem1);
-        contextTest.Add(toDoItem2);
+        contextTest.ToDoItems.Add(toDoItem1);
+        contextTest.ToDoItems.Add(toDoItem2);
         contextTest.SaveChanges();
 
         // Act
@@ -58,8 +58,8 @@ public class GetTests
         Assert.True(lastToDo.IsCompleted);
 
         // Cleanup
-        contextTest.Remove(toDoItem1);
-        contextTest.Remove(toDoItem2);
+        contextTest.ToDoItems.Remove(toDoItem1);
+        contextTest.ToDoItems.Remove(toDoItem2);
         contextTest.SaveChanges();
     }
 
@@ -69,8 +69,8 @@ public class GetTests
         // Arrange
         var contextTest = new ToDoItemsContext(dataPath);
         var controllerTest = new ToDoItemsController(contextTest);
-        contextTest.Add(toDoItem1);
-        contextTest.Add(toDoItem2);
+        contextTest.ToDoItems.Add(toDoItem1);
+        contextTest.ToDoItems.Add(toDoItem2);
         contextTest.SaveChanges();
 
         // Act
@@ -89,8 +89,8 @@ public class GetTests
         Assert.False(value.IsCompleted);
 
         // Cleanup
-        contextTest.Remove(toDoItem1);
-        contextTest.Remove(toDoItem2);
+        contextTest.ToDoItems.Remove(toDoItem1);
+        contextTest.ToDoItems.Remove(toDoItem2);
         contextTest.SaveChanges();
     }
 
@@ -100,8 +100,8 @@ public class GetTests
         // Arrange
         var contextTest = new ToDoItemsContext(dataPath);
         var controllerTest = new ToDoItemsController(contextTest);
-        contextTest.Add(toDoItem1);
-        contextTest.Add(toDoItem2);
+        contextTest.ToDoItems.Add(toDoItem1);
+        contextTest.ToDoItems.Add(toDoItem2);
         contextTest.SaveChanges();
 
 
@@ -115,8 +115,8 @@ public class GetTests
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
 
         // Cleanup
-        contextTest.Remove(toDoItem1);
-        contextTest.Remove(toDoItem2);
+        contextTest.ToDoItems.Remove(toDoItem1);
+        contextTest.ToDoItems.Remove(toDoItem2);
         contextTest.SaveChanges();
     }
 }
