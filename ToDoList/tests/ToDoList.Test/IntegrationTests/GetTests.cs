@@ -44,14 +44,14 @@ public class GetTests
         Assert.IsType<OkObjectResult>(result.Result); // the result should be of type OkObjectResult
 
         var firstToDo = value.First(); // get the first item
-                                       // check its properties
+        // check its properties
         Assert.Equal(1, firstToDo.Id);
         Assert.Equal("jmeno1", firstToDo.Name);
         Assert.Equal("popis1", firstToDo.Description);
         Assert.False(firstToDo.IsCompleted);
 
         var lastToDo = value.Last(); // get the last item
-                                     // check its properties
+        // check its properties
         Assert.Equal(2, lastToDo.Id);
         Assert.Equal("jmeno2", lastToDo.Name);
         Assert.Equal("popis2", lastToDo.Description);
