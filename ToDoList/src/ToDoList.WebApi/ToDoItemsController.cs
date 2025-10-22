@@ -125,6 +125,6 @@ public class ToDoItemsController : ControllerBase
         //respond to client
         return (item is null)
             ? NotFound() //404
-            : NoContent(); //204 with data
+            : NoContent(); //204
     }
 }
