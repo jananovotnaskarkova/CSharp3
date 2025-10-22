@@ -8,13 +8,13 @@ using ToDoList.WebApi;
 public class PostTests
 {
     private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private readonly ToDoItemsController controllerTest = new(ContextTest);
     private static readonly ToDoItemCreateRequestDto ToDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
     private static readonly ToDoItemCreateRequestDto ToDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
     [Fact]
     public void Create_ReturnsCreatedItems()
     {
         // Act
+        ToDoItemsController controllerTest = new(ContextTest);
         var resultCreate1 = controllerTest.Create(ToDoItem1); // ActionResult<ToDoItemGetResponseDto>
         var resultCreate2 = controllerTest.Create(ToDoItem2); // ActionResult<ToDoItemGetResponseDto>
 

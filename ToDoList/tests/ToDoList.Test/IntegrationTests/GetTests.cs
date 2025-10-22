@@ -8,7 +8,6 @@ using ToDoList.WebApi;
 public class GetTests
 {
     private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private readonly ToDoItemsController controllerTest = new(ContextTest);
     private static readonly ToDoItem ToDoItem1 = new()
     {
         ToDoItemId = 1,
@@ -28,6 +27,7 @@ public class GetTests
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
+        ToDoItemsController controllerTest = new(ContextTest);
         ContextTest.Add(ToDoItem1);
         ContextTest.Add(ToDoItem2);
         ContextTest.SaveChanges();
@@ -66,6 +66,7 @@ public class GetTests
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
+        ToDoItemsController controllerTest = new(ContextTest);
         ContextTest.Add(ToDoItem1);
         ContextTest.Add(ToDoItem2);
         ContextTest.SaveChanges();
@@ -95,6 +96,7 @@ public class GetTests
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
+        ToDoItemsController controllerTest = new(ContextTest);
         ContextTest.Add(ToDoItem1);
         ContextTest.Add(ToDoItem2);
         ContextTest.SaveChanges();

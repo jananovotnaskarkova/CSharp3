@@ -8,7 +8,6 @@ using ToDoList.WebApi;
 public class DeleteTests
 {
     private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private readonly ToDoItemsController controllerTest = new(ContextTest);
     private static readonly ToDoItem ToDoItem1 = new()
     {
         ToDoItemId = 1,
@@ -28,6 +27,7 @@ public class DeleteTests
     public void Delete_DeleteOneItemById()
     {
         // Arrange
+        ToDoItemsController controllerTest = new(ContextTest);
         ContextTest.Add(ToDoItem1);
         ContextTest.Add(ToDoItem2);
         ContextTest.SaveChanges();
@@ -59,6 +59,7 @@ public class DeleteTests
     public void Delete_ReturnsNotFound()
     {
         // Arrange
+        ToDoItemsController controllerTest = new(ContextTest);
         ContextTest.Add(ToDoItem1);
         ContextTest.Add(ToDoItem2);
         ContextTest.SaveChanges();

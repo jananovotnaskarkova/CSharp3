@@ -9,7 +9,6 @@ using ToDoList.Persistence;
 public class PutTests
 {
     private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private readonly ToDoItemsController controllerTest = new(ContextTest);
     private static readonly ToDoItem ToDoItem1 = new()
     {
         ToDoItemId = 1,
@@ -30,6 +29,7 @@ public class PutTests
     public void Update_ReturnsUpdatedItems()
     {
         // Arrange
+        ToDoItemsController controllerTest = new(ContextTest);
         ContextTest.Add(ToDoItem1);
         ContextTest.Add(ToDoItem2);
         ContextTest.SaveChanges();
@@ -59,6 +59,7 @@ public class PutTests
     public void Update_ReturnsNotFound()
     {
         // Arrange
+        ToDoItemsController controllerTest = new(ContextTest);
         ContextTest.Add(ToDoItem1);
         ContextTest.Add(ToDoItem2);
         ContextTest.SaveChanges();
