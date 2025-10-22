@@ -8,34 +8,35 @@ using ToDoList.Persistence;
 
 public class PutTests
 {
-    private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private static readonly ToDoItem ToDoItem1 = new()
+    private readonly string dataPath = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+    private readonly ToDoItem toDoItem1 = new()
     {
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
         IsCompleted = false
     };
-    private static readonly ToDoItem ToDoItem2 = new()
+    private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
         Description = "popis2",
         IsCompleted = true
     };
-    private static readonly TodoItemUpdateRequestDto ToDoItem3 = new(Name: "jmeno3", Description: "popis3", IsCompleted: false);
+    private readonly TodoItemUpdateRequestDto toDoItem3 = new(Name: "jmeno3", Description: "popis3", IsCompleted: false);
 
     [Fact]
     public void Update_ReturnsUpdatedItems()
     {
         // Arrange
-        ToDoItemsController controllerTest = new(ContextTest);
-        ContextTest.Add(ToDoItem1);
-        ContextTest.Add(ToDoItem2);
-        ContextTest.SaveChanges();
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.Add(toDoItem1);
+        contextTest.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
-        var result = controllerTest.UpdateById(2, ToDoItem3); // ActionResult<ToDoItemGetResponseDto>
+        var result = controllerTest.UpdateById(2, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
@@ -50,22 +51,23 @@ public class PutTests
         Assert.False(value.IsCompleted);
 
         // Cleanup
-        ContextTest.Remove(ToDoItem1);
-        ContextTest.Remove(ToDoItem2);
-        ContextTest.SaveChanges();
+        contextTest.Remove(toDoItem1);
+        contextTest.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 
     [Fact]
     public void Update_ReturnsNotFound()
     {
         // Arrange
-        ToDoItemsController controllerTest = new(ContextTest);
-        ContextTest.Add(ToDoItem1);
-        ContextTest.Add(ToDoItem2);
-        ContextTest.SaveChanges();
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.Add(toDoItem1);
+        contextTest.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
-        var result = controllerTest.UpdateById(3, ToDoItem3); // ActionResult<ToDoItemGetResponseDto>
+        var result = controllerTest.UpdateById(3, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
         // Assert
         Assert.Null(value); // the returned item should be null since the updated item does not exist
@@ -73,8 +75,8 @@ public class PutTests
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
 
         // Cleanup
-        ContextTest.Remove(ToDoItem1);
-        ContextTest.Remove(ToDoItem2);
-        ContextTest.SaveChanges();
+        contextTest.Remove(toDoItem1);
+        contextTest.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 }

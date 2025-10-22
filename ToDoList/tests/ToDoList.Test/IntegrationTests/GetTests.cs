@@ -7,15 +7,15 @@ using ToDoList.WebApi;
 
 public class GetTests
 {
-    private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private static readonly ToDoItem ToDoItem1 = new()
+    private readonly string dataPath = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+    private readonly ToDoItem toDoItem1 = new()
     {
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
         IsCompleted = false
     };
-    private static readonly ToDoItem ToDoItem2 = new()
+    private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
@@ -27,10 +27,11 @@ public class GetTests
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        ToDoItemsController controllerTest = new(ContextTest);
-        ContextTest.Add(ToDoItem1);
-        ContextTest.Add(ToDoItem2);
-        ContextTest.SaveChanges();
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.Add(toDoItem1);
+        contextTest.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
         var result = controllerTest.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
@@ -43,33 +44,34 @@ public class GetTests
         Assert.IsType<OkObjectResult>(result.Result); // the result should be of type OkObjectResult
 
         var firstToDo = value.First(); // get the first item
-        // check its properties
+                                       // check its properties
         Assert.Equal(1, firstToDo.Id);
         Assert.Equal("jmeno1", firstToDo.Name);
         Assert.Equal("popis1", firstToDo.Description);
         Assert.False(firstToDo.IsCompleted);
 
         var lastToDo = value.Last(); // get the last item
-        // check its properties
+                                     // check its properties
         Assert.Equal(2, lastToDo.Id);
         Assert.Equal("jmeno2", lastToDo.Name);
         Assert.Equal("popis2", lastToDo.Description);
         Assert.True(lastToDo.IsCompleted);
 
         // Cleanup
-        ContextTest.Remove(ToDoItem1);
-        ContextTest.Remove(ToDoItem2);
-        ContextTest.SaveChanges();
+        contextTest.Remove(toDoItem1);
+        contextTest.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 
     [Fact]
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        ToDoItemsController controllerTest = new(ContextTest);
-        ContextTest.Add(ToDoItem1);
-        ContextTest.Add(ToDoItem2);
-        ContextTest.SaveChanges();
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.Add(toDoItem1);
+        contextTest.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
         var result = controllerTest.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
@@ -87,19 +89,20 @@ public class GetTests
         Assert.False(value.IsCompleted);
 
         // Cleanup
-        ContextTest.Remove(ToDoItem1);
-        ContextTest.Remove(ToDoItem2);
-        ContextTest.SaveChanges();
+        contextTest.Remove(toDoItem1);
+        contextTest.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 
     [Fact]
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        ToDoItemsController controllerTest = new(ContextTest);
-        ContextTest.Add(ToDoItem1);
-        ContextTest.Add(ToDoItem2);
-        ContextTest.SaveChanges();
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.Add(toDoItem1);
+        contextTest.Add(toDoItem2);
+        contextTest.SaveChanges();
 
 
         // Act
@@ -112,8 +115,8 @@ public class GetTests
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
 
         // Cleanup
-        ContextTest.Remove(ToDoItem1);
-        ContextTest.Remove(ToDoItem2);
-        ContextTest.SaveChanges();
+        contextTest.Remove(toDoItem1);
+        contextTest.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 }

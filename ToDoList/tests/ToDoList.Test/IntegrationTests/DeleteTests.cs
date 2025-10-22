@@ -7,15 +7,15 @@ using ToDoList.WebApi;
 
 public class DeleteTests
 {
-    private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private static readonly ToDoItem ToDoItem1 = new()
+    private readonly string dataPath = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+    private readonly ToDoItem toDoItem1 = new()
     {
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
         IsCompleted = false
     };
-    private static readonly ToDoItem ToDoItem2 = new()
+    private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
@@ -27,10 +27,11 @@ public class DeleteTests
     public void Delete_DeleteOneItemById()
     {
         // Arrange
-        ToDoItemsController controllerTest = new(ContextTest);
-        ContextTest.Add(ToDoItem1);
-        ContextTest.Add(ToDoItem2);
-        ContextTest.SaveChanges();
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.Add(toDoItem1);
+        contextTest.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
         var resultDelete = controllerTest.DeleteById(1); // IActionResult
@@ -51,18 +52,19 @@ public class DeleteTests
         Assert.True(singleItem.IsCompleted);
 
         // Cleanup
-        ContextTest.Remove(ToDoItem2);
-        ContextTest.SaveChanges();
+        contextTest.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 
     [Fact]
     public void Delete_ReturnsNotFound()
     {
         // Arrange
-        ToDoItemsController controllerTest = new(ContextTest);
-        ContextTest.Add(ToDoItem1);
-        ContextTest.Add(ToDoItem2);
-        ContextTest.SaveChanges();
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        contextTest.Add(toDoItem1);
+        contextTest.Add(toDoItem2);
+        contextTest.SaveChanges();
 
         // Act
         var resultDelete = controllerTest.DeleteById(3); // IActionResult
@@ -76,8 +78,8 @@ public class DeleteTests
         Assert.IsType<NotFoundResult>(resultDelete); // the result should be of type NotFoundResult
 
         // Cleanup
-        ContextTest.Remove(ToDoItem1);
-        ContextTest.Remove(ToDoItem2);
-        ContextTest.SaveChanges();
+        contextTest.Remove(toDoItem1);
+        contextTest.Remove(toDoItem2);
+        contextTest.SaveChanges();
     }
 }

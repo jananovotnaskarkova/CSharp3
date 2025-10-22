@@ -1,7 +1,6 @@
 namespace ToDoList.WebApi;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence;
@@ -108,21 +107,23 @@ public class ToDoItemsController : ControllerBase
     [HttpDelete("{toDoItemId:int}")]
     public IActionResult DeleteById(int toDoItemId)
     {
-        int numberOfRowsDeleted;
+        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == toDoItemId);
 
         //try to delete an item
         try
         {
-            numberOfRowsDeleted = context.ToDoItems
-            .Where(i => i.ToDoItemId == toDoItemId)
-            .ExecuteDelete();
+            if (item != null)
+            {
+                context.Remove(item);
+                context.SaveChanges();
+            }
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
         //respond to client
-        return (numberOfRowsDeleted is 0)
+        return (item is null)
             ? NotFound() //404
             : NoContent(); //204 with data
     }

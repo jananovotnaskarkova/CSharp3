@@ -7,16 +7,17 @@ using ToDoList.WebApi;
 
 public class PostTests
 {
-    private static readonly ToDoItemsContext ContextTest = new("Data Source=../../../IntegrationTests/data/localdb_test.db");
-    private static readonly ToDoItemCreateRequestDto ToDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
-    private static readonly ToDoItemCreateRequestDto ToDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
+    private readonly string dataPath = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+    private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
+    private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
     [Fact]
     public void Create_ReturnsCreatedItems()
     {
         // Act
-        ToDoItemsController controllerTest = new(ContextTest);
-        var resultCreate1 = controllerTest.Create(ToDoItem1); // ActionResult<ToDoItemGetResponseDto>
-        var resultCreate2 = controllerTest.Create(ToDoItem2); // ActionResult<ToDoItemGetResponseDto>
+        var contextTest = new ToDoItemsContext(dataPath);
+        var controllerTest = new ToDoItemsController(contextTest);
+        var resultCreate1 = controllerTest.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
+        var resultCreate2 = controllerTest.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
 
         var resultRead = controllerTest.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
