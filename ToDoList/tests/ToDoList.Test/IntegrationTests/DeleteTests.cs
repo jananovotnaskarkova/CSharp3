@@ -1,19 +1,18 @@
-namespace ToDoList.Test;
+namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi;
 
-public class DeleteTests
+public class DeleteTests : ControllerTestBase
 {
-    private static readonly ToDoItem ToDoItem1 = new()
+    private readonly ToDoItem toDoItem1 = new()
     {
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
         IsCompleted = false
     };
-    private static readonly ToDoItem ToDoItem2 = new()
+    private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
@@ -25,13 +24,13 @@ public class DeleteTests
     public void Delete_DeleteOneItemById()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
         // Act
-        var resultDelete = controller.DeleteById(1); // IActionResult
-        var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultDelete = Controller.DeleteById(1); // IActionResult
+        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -52,13 +51,13 @@ public class DeleteTests
     public void Delete_ReturnsNotFound()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
         // Act
-        var resultDelete = controller.DeleteById(3); // IActionResult
-        var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultDelete = Controller.DeleteById(3); // IActionResult
+        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert

@@ -1,19 +1,18 @@
-namespace ToDoList.Test;
+namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
-using ToDoList.WebApi;
 
-public class GetTests
+public class GetTests : ControllerTestBase
 {
-    private static readonly ToDoItem ToDoItem1 = new()
+    private readonly ToDoItem toDoItem1 = new()
     {
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
         IsCompleted = false
     };
-    private static readonly ToDoItem ToDoItem2 = new()
+    private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
@@ -25,12 +24,12 @@ public class GetTests
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
         // Act
-        var result = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var result = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var value = result.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -58,12 +57,12 @@ public class GetTests
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
         // Act
-        var result = controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
+        var result = Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
@@ -82,12 +81,13 @@ public class GetTests
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        var controller = new ToDoItemsController();
-        controller.AddItemToStorage(ToDoItem1);
-        controller.AddItemToStorage(ToDoItem2);
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
+
 
         // Act
-        var result = controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
+        var result = Controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
