@@ -26,9 +26,9 @@ public class PutTests : ControllerTestBase
     public void Update_ReturnsUpdatedItems()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
         var result = Controller.UpdateById(2, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
@@ -50,9 +50,9 @@ public class PutTests : ControllerTestBase
     public void Update_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
         var result = Controller.UpdateById(3, toDoItem3); // ActionResult<ToDoItemGetResponseDto>

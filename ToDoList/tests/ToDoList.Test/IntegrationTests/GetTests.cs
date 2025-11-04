@@ -24,9 +24,9 @@ public class GetTests : ControllerTestBase
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
         var result = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
@@ -57,9 +57,9 @@ public class GetTests : ControllerTestBase
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
         var result = Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
@@ -81,9 +81,9 @@ public class GetTests : ControllerTestBase
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
 
         // Act

@@ -2,6 +2,8 @@ namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
+using ToDoList.Persistence;
+using ToDoList.WebApi;
 
 public class DeleteTests : ControllerTestBase
 {
@@ -24,9 +26,12 @@ public class DeleteTests : ControllerTestBase
     public void Delete_DeleteOneItemById()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        var connectionString = "Data Source=../../../IntegrationTests/data/localdb_test.db";
+        using var context = new ToDoItemsContext(connectionString);
+        var controller = new ToDoItemsController(context: context, repository: null);
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
         var resultDelete = Controller.DeleteById(1); // IActionResult
@@ -51,9 +56,9 @@ public class DeleteTests : ControllerTestBase
     public void Delete_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
         var resultDelete = Controller.DeleteById(3); // IActionResult

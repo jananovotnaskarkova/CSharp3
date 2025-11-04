@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 using ToDoList.Persistence;
+using ToDoList.Persistence.Repositories;
 
 [Route("api/[controller]")] //localhost:5000/api/ToDoItems
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    private readonly ToDoItemsContext context;
-    public ToDoItemsController(ToDoItemsContext context)
+    private readonly IRepository<ToDoItem> repository;
+    public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
     {
-        this.context = context;
+        this.repository = repository;
     }
 
     [HttpPost]
@@ -24,8 +25,7 @@ public class ToDoItemsController : ControllerBase
         //try to create an item
         try
         {
-            context.ToDoItems.Add(item);
-            context.SaveChanges();
+            repository.Create(item);
         }
         catch (Exception ex)
         {
@@ -114,9 +114,10 @@ public class ToDoItemsController : ControllerBase
         {
             if (item != null)
             {
-                context.ToDoItems.Remove(item);
-                context.SaveChanges();
+                // context.ToDoItems.Remove(item);
+                // context.SaveChanges();
             }
+            repository.DeletById(toDoItemId);
         }
         catch (Exception ex)
         {
