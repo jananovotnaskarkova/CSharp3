@@ -1,3 +1,4 @@
 ﻿using Hangman;
 
-Game.Play();
+var game = new Game();
+game.Play();

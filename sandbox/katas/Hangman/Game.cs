@@ -5,51 +5,58 @@ using System.Text.RegularExpressions;
 
 public class Game
 {
-    private static string? word;
-    private static List<char>? hiddenWord;
-    private static int numberOfLifes = 10;
-    private static bool gameInProgress;
-    private static List<string> guessedLettersIncorrect = [];
-    private static List<string> guessedLettersCorrect = [];
-    private static string? letter;
-    private static string? upperLetter;
+    private const int INITIAL_LIVES = 10;
+    private readonly string? word;
+    private readonly List<char>? hiddenWord;
+    private int numberOfLives;
+    public Game(string? customWord = null)
+    {
+        word = customWord ?? SelectNewWord(listOfWords);
+        hiddenWord = [.. word.ToCharArray().Select(c => '*')];
+        numberOfLives = INITIAL_LIVES;
+    }
+    private readonly List<string> listOfWords = ["KVETINA", "PRIRODA", "BYDLENI"];
 
-    private static List<string> listOfWords = ["KVETINA", "PRIRODA", "BYDLENI"];
-
-    private static string SelectNewWord()
+    private static string SelectNewWord(List<string> list)
     {
         var r = new Random();
-        return listOfWords[r.Next(0, listOfWords.Count)];
+        return list[r.Next(0, list.Count)];
     }
 
-    public static void Play()
+    public void Play()
     {
-        word = SelectNewWord();
-        hiddenWord = [.. word.ToCharArray().Select(c => '*')];
         Console.WriteLine("Vitej ve hre Hangman!");
         Console.WriteLine("-------------------------------");
         Console.WriteLine($"Slovo ma {word.Length} pismen");
         Console.WriteLine(string.Join("", hiddenWord));
-        Console.WriteLine($"Mas {numberOfLifes} zivotu");
+        Console.WriteLine($"Mas {numberOfLives} zivotu");
         Console.WriteLine("-------------------------------");
-        gameInProgress = true;
-        Guess(hiddenWord);
+
+        Guess(word, hiddenWord, numberOfLives);
     }
 
-    public static void Guess(List<char> hiddenWord)
+    public void Guess(string word, List<char> hiddenWord, int numberOfLives)
     {
+        bool gameInProgress = true;
+        string? letter;
+        string? upperLetter;
+        List<string> guessedLettersIncorrect = [];
+        List<string> guessedLettersCorrect = [];
+        int number = numberOfLives;
+
+
         while (gameInProgress)
         {
             Console.WriteLine("Zadej pismeno:");
 
             // Read input, check if valid and not guessed before, otherwise ask for new input
-            letter = GetInput();
+            letter = GetInput(guessedLettersCorrect, guessedLettersIncorrect);
 
             // Convert to upper case
             upperLetter = letter.ToUpper(CultureInfo.CurrentCulture);
 
             // Process the letter, check if in word, update hidden word, if not in word, decrease lifes
-            ProcessLetter();
+            numberOfLives = ProcessLetter(upperLetter, guessedLettersCorrect, guessedLettersIncorrect);
 
             Console.WriteLine("-------------------------------");
             Console.WriteLine(string.Join("", hiddenWord));
@@ -61,7 +68,7 @@ public class Game
             }
 
             // Print number of lifes
-            Console.WriteLine("Pocet zivotu: " + numberOfLifes);
+            Console.WriteLine("Pocet zivotu: " + numberOfLives);
 
             // Check win/loss conditions
             if (!hiddenWord.Contains('*'))
@@ -69,7 +76,7 @@ public class Game
                 Console.WriteLine("Vyhral jsi!");
                 gameInProgress = false;
             }
-            else if (numberOfLifes == 0)
+            else if (numberOfLives == 0)
             {
                 Console.WriteLine($"Prohral jsi, slovo bylo {word}");
                 gameInProgress = false;
@@ -78,7 +85,7 @@ public class Game
         }
     }
 
-    public static string GetInput()
+    public string GetInput(List<string> guessedLettersCorrect, List<string> guessedLettersIncorrect)
     {
         string letter = "";
         bool correct_input = false;
@@ -105,7 +112,7 @@ public class Game
         return letter;
     }
 
-    public static void ProcessLetter()
+    public int ProcessLetter(string upperLetter, List<string> guessedLettersCorrect, List<string> guessedLettersIncorrect)
     {
         if (word.Contains(upperLetter))
         {
@@ -120,9 +127,10 @@ public class Game
         }
         else
         {
-            numberOfLifes--;
+            numberOfLives--;
             guessedLettersIncorrect.Add(upperLetter);
             Console.WriteLine($"Spatne, zadane pismeno neni ve slove");
         }
+        return numberOfLives;
     }
 }
