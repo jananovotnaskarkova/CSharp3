@@ -40,7 +40,7 @@ public class ToDoItemsController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<ToDoItemGetResponseDto>> Read()
     {
-        List<ToDoItem> itemsToGet;
+        IEnumerable<ToDoItem> itemsToGet;
 
         //try to read all items
         try

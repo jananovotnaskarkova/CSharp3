@@ -18,12 +18,12 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
         context.SaveChanges();
     }
 
-    public List<ToDoItem> Read()
+    public IEnumerable<ToDoItem> Read()
     {
         return context.ToDoItems.ToList();
     }
 
-    public ToDoItem ReadById(int toDoItemId)
+    public ToDoItem? ReadById(int toDoItemId)
     {
         return context.ToDoItems.Find(toDoItemId);
     }
