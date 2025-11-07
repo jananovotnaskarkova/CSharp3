@@ -10,9 +10,11 @@ using ToDoList.Persistence.Repositories;
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
+    private readonly ToDoItemsContext context;
     private readonly IRepository<ToDoItem> repository;
     public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
     {
+        this.context = context;
         this.repository = repository;
     }
 
@@ -46,7 +48,7 @@ public class ToDoItemsController : ControllerBase
         //try to read all items
         try
         {
-            itemsToGet = context.ToDoItems.ToList();
+            itemsToGet = repository.Read();
         }
         catch (Exception ex)
         {
@@ -64,7 +66,7 @@ public class ToDoItemsController : ControllerBase
         //try to read an item
         try
         {
-            itemToGet = context.ToDoItems.Find(toDoItemId);
+            itemToGet = repository.ReadById(toDoItemId);
         }
         catch (Exception ex)
         {
@@ -79,53 +81,40 @@ public class ToDoItemsController : ControllerBase
     [HttpPut("{toDoItemId:int}")]
     public ActionResult<ToDoItemGetResponseDto> UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
     {
-        //create domain object from request
-        var itemUpdated = request.ToDomain();
-        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == toDoItemId);
+        bool is_updated;
 
         //try to update an item
         try
         {
-            if (item != null)
-            {
-                item.Name = itemUpdated.Name;
-                item.Description = itemUpdated.Description;
-                item.IsCompleted = itemUpdated.IsCompleted;
-                context.SaveChanges();
-            }
+            is_updated = repository.UpdateById(toDoItemId, request);
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
         //respond to client
-        return (item is null)
-            ? NotFound() //404
-            : Ok(ToDoItemGetResponseDto.FromDomain(context.ToDoItems.Find(toDoItemId))); //200 with data
+        return is_updated
+            ? Ok(ToDoItemGetResponseDto.FromDomain(repository.ReadById(toDoItemId))) //200 with data
+            : NotFound(); //404
     }
 
     [HttpDelete("{toDoItemId:int}")]
     public IActionResult DeleteById(int toDoItemId)
     {
-        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == toDoItemId);
+        bool is_deleted;
 
         //try to delete an item
         try
         {
-            if (item != null)
-            {
-                // context.ToDoItems.Remove(item);
-                // context.SaveChanges();
-            }
-            repository.DeletById(toDoItemId);
+            is_deleted = repository.DeletById(toDoItemId);
         }
         catch (Exception ex)
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
         //respond to client
-        return (item is null)
-            ? NotFound() //404
-            : NoContent(); //204
+        return is_deleted
+            ? NoContent() //204
+            : NotFound(); //404
     }
 }

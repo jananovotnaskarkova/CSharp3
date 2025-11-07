@@ -56,9 +56,9 @@ public class DeleteTests : ControllerTestBase
     public void Delete_ReturnsNotFound()
     {
         // Arrange
-        context.ToDoItems.Add(toDoItem1);
-        context.ToDoItems.Add(toDoItem2);
-        context.SaveChanges();
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
         // Act
         var resultDelete = Controller.DeleteById(3); // IActionResult

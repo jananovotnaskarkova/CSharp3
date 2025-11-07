@@ -1,28 +1,21 @@
 namespace ToDoList.Test.UnitTests;
 
-using NSubstitute;
-using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
-using ToDoList.Persistence.Repositories;
-using ToDoList.Domain.Models;
-using ToDoList.WebApi;
+using ToDoList.Test.IntegrationTests;
+using Microsoft.AspNetCore.Mvc;
 
-public class PostTests
+public class PostTests : ControllerTestBaseUnitTests
 {
     private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
     private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
     [Fact]
     public void Create_ReturnsCreatedItems()
     {
-        // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        var controller = new ToDoItemsController(null, repositoryMock);
-
         // Act
-        var resultCreate1 = controller.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
-        var resultCreate2 = controller.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
+        var resultCreate1 = Controller.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
+        var resultCreate2 = Controller.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
 
-        var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert

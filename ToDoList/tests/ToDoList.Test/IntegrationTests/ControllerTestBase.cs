@@ -5,17 +5,17 @@ using ToDoList.WebApi;
 public class ControllerTestBase : IDisposable
 {
     protected readonly ToDoItemsController Controller;
-    protected readonly ToDoItemsContext context;
+    protected readonly ToDoItemsContext Context;
     public ControllerTestBase()
     {
-        context = new ToDoItemsContext("Data Source=../../../IntegrationTests/data/localdb_test.db");
-        Controller = new ToDoItemsController(context);
+        Context = new ToDoItemsContext("Data Source=../../../IntegrationTests/data/localdb_test.db");
+        Controller = new ToDoItemsController(context: Context, repository: null);
     }
 
     public void Dispose()
     {
-        context.ToDoItems.RemoveRange(context.ToDoItems.ToList());
-        context.SaveChanges();
-        context.Dispose();
+        Context.ToDoItems.RemoveRange(Context.ToDoItems.ToList());
+        Context.SaveChanges();
+        Context.Dispose();
     }
 }

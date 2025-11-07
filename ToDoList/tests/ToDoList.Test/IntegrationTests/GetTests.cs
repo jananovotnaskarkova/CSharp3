@@ -1,5 +1,6 @@
-namespace ToDoList.Test.IntegrationTests;
+namespace ToDoList.Test.UnitTests;
 
+using ToDoList.Test.IntegrationTests;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
 
@@ -24,9 +25,9 @@ public class GetTests : ControllerTestBase
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        context.ToDoItems.Add(toDoItem1);
-        context.ToDoItems.Add(toDoItem2);
-        context.SaveChanges();
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
         // Act
         var result = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
@@ -57,9 +58,9 @@ public class GetTests : ControllerTestBase
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        context.ToDoItems.Add(toDoItem1);
-        context.ToDoItems.Add(toDoItem2);
-        context.SaveChanges();
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
         // Act
         var result = Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
@@ -81,9 +82,9 @@ public class GetTests : ControllerTestBase
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        context.ToDoItems.Add(toDoItem1);
-        context.ToDoItems.Add(toDoItem2);
-        context.SaveChanges();
+        Context.ToDoItems.Add(toDoItem1);
+        Context.ToDoItems.Add(toDoItem2);
+        Context.SaveChanges();
 
 
         // Act
