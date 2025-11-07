@@ -3,18 +3,15 @@ namespace ToDoList.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
-using ToDoList.Persistence;
 using ToDoList.Persistence.Repositories;
 
 [Route("api/[controller]")] //localhost:5000/api/ToDoItems
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    private readonly ToDoItemsContext context;
     private readonly IRepository<ToDoItem> repository;
-    public ToDoItemsController(ToDoItemsContext context, IRepository<ToDoItem> repository)
+    public ToDoItemsController(IRepository<ToDoItem> repository)
     {
-        this.context = context;
         this.repository = repository;
     }
 
@@ -55,7 +52,8 @@ public class ToDoItemsController : ControllerBase
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
         //respond to client
-        return Ok(itemsToGet.Select(ToDoItemGetResponseDto.FromDomain)); //200 with data
+        var result = itemsToGet?.Select(ToDoItemGetResponseDto.FromDomain) ?? Enumerable.Empty<ToDoItemGetResponseDto>();
+        return Ok(result); //200 with data
     }
 
     [HttpGet("{toDoItemId:int}")]

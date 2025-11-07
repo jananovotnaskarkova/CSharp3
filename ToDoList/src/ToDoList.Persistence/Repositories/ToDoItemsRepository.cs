@@ -6,7 +6,7 @@ using ToDoList.Domain.Models;
 
 public class ToDoItemsRepository : IRepository<ToDoItem>
 {
-    private readonly ToDoItemsContext context;
+    public readonly ToDoItemsContext context;
     public ToDoItemsRepository(ToDoItemsContext context)
     {
         this.context = context;
@@ -20,7 +20,7 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
 
     public List<ToDoItem> Read() => context.ToDoItems.ToList();
 
-    public ToDoItem? ReadById(int toDoItemId) => context.ToDoItems.Find(toDoItemId);
+    public ToDoItem ReadById(int toDoItemId) => context.ToDoItems.Find(toDoItemId);
 
     public bool UpdateById(int toDoItemId, TodoItemUpdateRequestDto request)
     {

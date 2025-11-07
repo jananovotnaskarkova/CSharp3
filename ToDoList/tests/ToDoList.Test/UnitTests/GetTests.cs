@@ -1,9 +1,12 @@
-namespace ToDoList.Test.IntegrationTests;
+namespace ToDoList.Test.UnitTests;
 
 using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
 using ToDoList.Domain.Models;
+using ToDoList.Persistence.Repositories;
+using ToDoList.WebApi;
 
-public class GetTests : ControllerTestBase
+public class GetTests
 {
     private readonly ToDoItem toDoItem1 = new()
     {
@@ -24,12 +27,14 @@ public class GetTests : ControllerTestBase
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var controller = new ToDoItemsController(repositoryMock);
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
-        var result = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var result = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var value = result.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -57,12 +62,14 @@ public class GetTests : ControllerTestBase
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var controller = new ToDoItemsController(repositoryMock);
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
         // Act
-        var result = Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
+        var result = controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
@@ -81,13 +88,15 @@ public class GetTests : ControllerTestBase
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        var controller = new ToDoItemsController(repositoryMock);
+        context.ToDoItems.Add(toDoItem1);
+        context.ToDoItems.Add(toDoItem2);
+        context.SaveChanges();
 
 
         // Act
-        var result = Controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
+        var result = controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
