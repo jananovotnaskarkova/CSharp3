@@ -18,9 +18,15 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
         context.SaveChanges();
     }
 
-    public List<ToDoItem> Read() => context.ToDoItems.ToList();
+    public List<ToDoItem> Read()
+    {
+        return context.ToDoItems.ToList();
+    }
 
-    public ToDoItem ReadById(int toDoItemId) => context.ToDoItems.Find(toDoItemId);
+    public ToDoItem ReadById(int toDoItemId)
+    {
+        return context.ToDoItems.Find(toDoItemId);
+    }
 
     public bool UpdateById(int toDoItemId, TodoItemUpdateRequestDto request)
     {

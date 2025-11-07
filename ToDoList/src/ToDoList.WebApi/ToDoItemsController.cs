@@ -52,8 +52,7 @@ public class ToDoItemsController : ControllerBase
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
         //respond to client
-        var result = itemsToGet?.Select(ToDoItemGetResponseDto.FromDomain) ?? Enumerable.Empty<ToDoItemGetResponseDto>();
-        return Ok(result); //200 with data
+        return Ok(itemsToGet.Select(ToDoItemGetResponseDto.FromDomain)); //200 with data
     }
 
     [HttpGet("{toDoItemId:int}")]
@@ -91,9 +90,14 @@ public class ToDoItemsController : ControllerBase
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
         //respond to client
-        return is_updated
-            ? Ok(ToDoItemGetResponseDto.FromDomain(repository.ReadById(toDoItemId))) //200 with data
-            : NotFound(); //404
+        if (is_updated)
+        {
+            return Ok(ToDoItemGetResponseDto.FromDomain(repository.ReadById(toDoItemId))); //200 with data
+        }
+        else
+        {
+            return NotFound(); //404
+        }
     }
 
     [HttpDelete("{toDoItemId:int}")]

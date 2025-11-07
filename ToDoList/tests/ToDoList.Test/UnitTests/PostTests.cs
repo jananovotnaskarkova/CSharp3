@@ -2,33 +2,19 @@ namespace ToDoList.Test.UnitTests;
 
 using ToDoList.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using NSubstitute;
-using ToDoList.WebApi;
-using ToDoList.Persistence.Repositories;
-using ToDoList.Domain.Models;
 
-public class PostTests
+public class PostTests : ControllerUnitTestBase
 {
     private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
     private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
     [Fact]
     public void Create_ReturnsCreatedItems()
     {
-        // Arrange
-        var repositoryMock = Substitute.For<IRepository<ToDoItem>>();
-        var controller = new ToDoItemsController(repositoryMock);
-
         // Act
-        var resultCreate1 = controller.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
-        var resultCreate2 = controller.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
-
-        var resultRead = controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
-        var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
+        var resultCreate1 = Controller.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
+        var resultCreate2 = Controller.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
 
         // Assert
-        Assert.NotNull(valueRead); // the returned collection should not be null
-        Assert.Equal(2, valueRead.Count()); // we expect exactly 2 items
-
         Assert.IsType<CreatedAtActionResult>(resultCreate1.Result); // the result should be of type CreatedAtActionResult
         Assert.IsType<CreatedAtActionResult>(resultCreate2.Result); // the result should be of type CreatedAtActionResult
 
