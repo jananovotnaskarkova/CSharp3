@@ -30,6 +30,7 @@ public class ToDoItemsController : ControllerBase
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
+
         //respond to client
         return CreatedAtAction(actionName: nameof(ReadById), // Which method to use to get the resource
                                routeValues: new { toDoItemId = item.ToDoItemId }, // Parameters needed to call that method
@@ -51,6 +52,7 @@ public class ToDoItemsController : ControllerBase
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
+
         //respond to client
         return Ok(itemsToGet.Select(ToDoItemGetResponseDto.FromDomain)); //200 with data
     }
@@ -69,6 +71,7 @@ public class ToDoItemsController : ControllerBase
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
+
         //respond to client
         return (itemToGet is null)
             ? NotFound() //404
@@ -89,15 +92,11 @@ public class ToDoItemsController : ControllerBase
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
+
         //respond to client
-        if (is_updated)
-        {
-            return Ok(ToDoItemGetResponseDto.FromDomain(repository.ReadById(toDoItemId))); //200 with data
-        }
-        else
-        {
-            return NotFound(); //404
-        }
+        return is_updated
+            ? Ok(ToDoItemGetResponseDto.FromDomain(repository.ReadById(toDoItemId))) //200 with data
+            : NotFound(); //404
     }
 
     [HttpDelete("{toDoItemId:int}")]
@@ -114,6 +113,7 @@ public class ToDoItemsController : ControllerBase
         {
             return Problem(ex.Message, null, StatusCodes.Status500InternalServerError); //500
         }
+
         //respond to client
         return is_deleted
             ? NoContent() //204
