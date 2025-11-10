@@ -40,7 +40,6 @@ public class GetTests : ControllerUnitTestBase
         // Assert
         Assert.NotNull(value); // the returned collection should not be null
         Assert.Equal(2, value.Count()); // we expect exactly 2 items
-
         Assert.IsType<OkObjectResult>(result.Result); // the result should be of type OkObjectResult
 
         var firstToDo = value.First(); // get the first item
@@ -70,7 +69,6 @@ public class GetTests : ControllerUnitTestBase
 
         // Assert
         Assert.NotNull(value); // the returned item should not be null
-
         Assert.IsType<OkObjectResult>(result.Result); // the result should be of type OkObjectResult
 
         // check its properties
@@ -92,7 +90,6 @@ public class GetTests : ControllerUnitTestBase
 
         // Assert
         Assert.Null(value); // the returned item should be null since the item does not exist
-
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
     }
 }

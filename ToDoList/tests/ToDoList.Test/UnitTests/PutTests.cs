@@ -30,7 +30,6 @@ public class PutTests : ControllerUnitTestBase
 
         // Assert
         Assert.NotNull(value); // the updated item should not be null
-
         Assert.IsType<OkObjectResult>(result.Result); // the result should be of type OkObjectResult
 
         // check its properties
@@ -52,7 +51,6 @@ public class PutTests : ControllerUnitTestBase
 
         // Assert
         Assert.Null(value); // the returned item should be null since the updated item does not exist
-
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
     }
 }
