@@ -81,12 +81,12 @@ public class ToDoItemsController : ControllerBase
     [HttpPut("{toDoItemId:int}")]
     public ActionResult<ToDoItemGetResponseDto> UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
     {
-        bool is_updated;
+        ToDoItem item_updated;
 
         //try to update an item
         try
         {
-            is_updated = repository.UpdateById(toDoItemId, request);
+            item_updated = repository.UpdateById(toDoItemId, request);
         }
         catch (Exception ex)
         {
@@ -94,8 +94,8 @@ public class ToDoItemsController : ControllerBase
         }
 
         //respond to client
-        return is_updated
-            ? Ok(ToDoItemGetResponseDto.FromDomain(repository.ReadById(toDoItemId))) //200 with data
+        return (item_updated is not null)
+            ? Ok(ToDoItemGetResponseDto.FromDomain(item_updated)) //200 with data
             : NotFound(); //404
     }
 
@@ -107,7 +107,7 @@ public class ToDoItemsController : ControllerBase
         //try to delete an item
         try
         {
-            is_deleted = repository.DeletById(toDoItemId);
+            is_deleted = repository.DeleteById(toDoItemId);
         }
         catch (Exception ex)
         {

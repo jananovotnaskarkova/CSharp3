@@ -1,19 +1,37 @@
 namespace ToDoList.Test.UnitTests;
 
 using Microsoft.AspNetCore.Mvc;
-using ToDoList.Domain.DTOs;
+using NSubstitute;
+using NSubstitute.ReturnsExtensions;
+using ToDoList.Domain.Models;
 
 public class GetTests : ControllerUnitTestBase
 {
-    private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
-    private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
+    private static List<ToDoItem> fakeList =
+    [
+        new()
+        {
+            ToDoItemId = 1,
+            Name = "jmeno1",
+            Description = "popis1",
+            IsCompleted = false
+        },
+        new()
+        {
+            ToDoItemId = 2,
+            Name = "jmeno2",
+            Description = "popis2",
+            IsCompleted = true
+        },
+    ];
+    private static List<ToDoItem> FakeGetData() => fakeList;
+    private static ToDoItem FakeGetData(int i) => fakeList.Single(item => item.ToDoItemId == i);
 
     [Fact]
     public void Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        Controller.Create(toDoItem1);
-        Controller.Create(toDoItem2);
+        RepositoryMock.Read().Returns(FakeGetData());
 
         // Act
         var result = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
@@ -27,14 +45,14 @@ public class GetTests : ControllerUnitTestBase
 
         var firstToDo = value.First(); // get the first item
         // check its properties
-        Assert.Equal(0, firstToDo.Id);
+        Assert.Equal(1, firstToDo.Id);
         Assert.Equal("jmeno1", firstToDo.Name);
         Assert.Equal("popis1", firstToDo.Description);
         Assert.False(firstToDo.IsCompleted);
 
         var lastToDo = value.Last(); // get the last item
         // check its properties
-        Assert.Equal(1, lastToDo.Id);
+        Assert.Equal(2, lastToDo.Id);
         Assert.Equal("jmeno2", lastToDo.Name);
         Assert.Equal("popis2", lastToDo.Description);
         Assert.True(lastToDo.IsCompleted);
@@ -44,8 +62,7 @@ public class GetTests : ControllerUnitTestBase
     public void Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        Controller.Create(toDoItem1);
-        Controller.Create(toDoItem2);
+        RepositoryMock.ReadById(1).Returns(FakeGetData(1));
 
         // Act
         var result = Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
@@ -58,17 +75,16 @@ public class GetTests : ControllerUnitTestBase
 
         // check its properties
         Assert.Equal(1, value.Id);
-        Assert.Equal("jmeno2", value.Name);
-        Assert.Equal("popis2", value.Description);
-        Assert.True(value.IsCompleted);
+        Assert.Equal("jmeno1", value.Name);
+        Assert.Equal("popis1", value.Description);
+        Assert.False(value.IsCompleted);
     }
 
     [Fact]
     public void Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        Controller.Create(toDoItem1);
-        Controller.Create(toDoItem2);
+        RepositoryMock.ReadById(3).ReturnsNull();
 
         // Act
         var result = Controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>

@@ -10,7 +10,7 @@ public interface IRepository<T>
     public void Create(T item);
     public IEnumerable<ToDoItem> Read();
     public ToDoItem? ReadById(int toDoItemId);
-    public bool UpdateById(int toDoItemId, TodoItemUpdateRequestDto request);
-    public bool DeletById(int id);
+    public ToDoItem? UpdateById(int toDoItemId, TodoItemUpdateRequestDto request);
+    public bool DeleteById(int id);
 
 }

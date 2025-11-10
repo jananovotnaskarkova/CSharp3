@@ -1,20 +1,28 @@
 namespace ToDoList.Test.UnitTests;
 
 using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using ToDoList.Domain.DTOs;
+using ToDoList.Domain.Models;
 
 public class PutTests : ControllerUnitTestBase
 {
-    private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
-    private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
     private readonly TodoItemUpdateRequestDto toDoItem3 = new(Name: "jmeno3", Description: "popis3", IsCompleted: false);
+    private static ToDoItem FakeUpdateList() =>
+        new()
+        {
+            ToDoItemId = 1,
+            Name = "jmeno3",
+            Description = "popis3",
+            IsCompleted = false
+        };
 
     [Fact]
     public void Update_ReturnsUpdatedItems()
     {
         // Arrange
-        Controller.Create(toDoItem1);
-        Controller.Create(toDoItem2);
+        RepositoryMock.UpdateById(1, toDoItem3).Returns(FakeUpdateList());
 
         // Act
         var result = Controller.UpdateById(1, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
@@ -36,8 +44,7 @@ public class PutTests : ControllerUnitTestBase
     public void Update_ReturnsNotFound()
     {
         // Arrange
-        Controller.Create(toDoItem1);
-        Controller.Create(toDoItem2);
+        RepositoryMock.UpdateById(3, toDoItem3).ReturnsNull();
 
         // Act
         var result = Controller.UpdateById(3, toDoItem3); // ActionResult<ToDoItemGetResponseDto>

@@ -28,7 +28,7 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
         return context.ToDoItems.Find(toDoItemId);
     }
 
-    public bool UpdateById(int toDoItemId, TodoItemUpdateRequestDto request)
+    public ToDoItem? UpdateById(int toDoItemId, TodoItemUpdateRequestDto request)
     {
         var itemUpdated = request.ToDomain();
         var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == toDoItemId);
@@ -39,12 +39,11 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
             item.Description = itemUpdated.Description;
             item.IsCompleted = itemUpdated.IsCompleted;
             context.SaveChanges();
-            return true;
         }
-        return false;
+        return item;
     }
 
-    public bool DeletById(int id)
+    public bool DeleteById(int id)
     {
         var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == id);
 
@@ -56,6 +55,4 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
         }
         return false;
     }
-
-
 }
