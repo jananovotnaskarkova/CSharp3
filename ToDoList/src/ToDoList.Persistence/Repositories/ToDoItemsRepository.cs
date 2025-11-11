@@ -1,0 +1,58 @@
+namespace ToDoList.Persistence.Repositories;
+
+using System.Collections.Generic;
+using ToDoList.Domain.DTOs;
+using ToDoList.Domain.Models;
+
+public class ToDoItemsRepository : IRepository<ToDoItem>
+{
+    public readonly ToDoItemsContext context;
+    public ToDoItemsRepository(ToDoItemsContext context)
+    {
+        this.context = context;
+    }
+
+    public void Create(ToDoItem item)
+    {
+        context.ToDoItems.Add(item);
+        context.SaveChanges();
+    }
+
+    public IEnumerable<ToDoItem> Read()
+    {
+        return context.ToDoItems.ToList();
+    }
+
+    public ToDoItem? ReadById(int toDoItemId)
+    {
+        return context.ToDoItems.Find(toDoItemId);
+    }
+
+    public ToDoItem? UpdateById(int toDoItemId, TodoItemUpdateRequestDto request)
+    {
+        var itemUpdated = request.ToDomain();
+        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == toDoItemId);
+
+        if (item != null)
+        {
+            item.Name = itemUpdated.Name;
+            item.Description = itemUpdated.Description;
+            item.IsCompleted = itemUpdated.IsCompleted;
+            context.SaveChanges();
+        }
+        return item;
+    }
+
+    public bool DeleteById(int id)
+    {
+        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == id);
+
+        if (item != null)
+        {
+            context.ToDoItems.Remove(item);
+            context.SaveChanges();
+            return true;
+        }
+        return false;
+    }
+}
