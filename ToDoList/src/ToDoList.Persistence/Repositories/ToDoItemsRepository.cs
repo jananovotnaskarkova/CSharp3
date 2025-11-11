@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 
-public class ToDoItemsRepository : IRepository<ToDoItem>
+public class ToDoItemsRepository(ToDoItemsContext context) : IRepository<ToDoItem>
 {
-    public readonly ToDoItemsContext context;
-    public ToDoItemsRepository(ToDoItemsContext context)
-    {
-        this.context = context;
-    }
+    public readonly ToDoItemsContext context = context;
 
     public void Create(ToDoItem item)
     {
@@ -18,20 +14,14 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
         context.SaveChanges();
     }
 
-    public IEnumerable<ToDoItem> Read()
-    {
-        return context.ToDoItems.ToList();
-    }
+    public IEnumerable<ToDoItem> Read() => [.. context.ToDoItems];
 
-    public ToDoItem? ReadById(int toDoItemId)
-    {
-        return context.ToDoItems.Find(toDoItemId);
-    }
+    public ToDoItem? ReadById(int id) => context.ToDoItems.Find(id);
 
-    public ToDoItem? UpdateById(int toDoItemId, TodoItemUpdateRequestDto request)
+    public ToDoItem? UpdateById(int id, TodoItemUpdateRequestDto request)
     {
         var itemUpdated = request.ToDomain();
-        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == toDoItemId);
+        var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == id);
 
         if (item != null)
         {
@@ -43,16 +33,18 @@ public class ToDoItemsRepository : IRepository<ToDoItem>
         return item;
     }
 
-    public bool DeleteById(int id)
+    public void DeleteById(int id)
     {
         var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == id);
 
-        if (item != null)
+        if (item is null)
+        {
+            throw new ArgumentOutOfRangeException($"TO DO item with ID {id} not found.");
+        }
+        else
         {
             context.ToDoItems.Remove(item);
             context.SaveChanges();
-            return true;
         }
-        return false;
     }
 }

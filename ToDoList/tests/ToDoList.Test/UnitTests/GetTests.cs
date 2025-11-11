@@ -3,9 +3,10 @@ namespace ToDoList.Test.UnitTests;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
+using ToDoList.Domain.DTOs;
 using ToDoList.Domain.Models;
 
-public class GetTests : ControllerUnitTestBase
+public class GetUnitTests : ControllerUnitTestBase
 {
     private static List<ToDoItem> fakeList =
     [
@@ -91,5 +92,39 @@ public class GetTests : ControllerUnitTestBase
         // Assert
         Assert.Null(value); // the returned item should be null since the item does not exist
         Assert.IsType<NotFoundResult>(result.Result); // the result should be of type NotFoundResult
+    }
+
+    [Fact]
+    public void Get_ReadWhenSomeItemAvailable_ReturnsOk()
+    {
+        // Arrange
+        RepositoryMock.Read().Returns(FakeGetData());
+
+        // Act
+        var result = Controller.Read();
+
+        // Assert
+        Assert.IsType<ActionResult<IEnumerable<ToDoItemGetResponseDto>>>(result);
+        RepositoryMock.Received(1).Read();
+    }
+
+    [Fact]
+    public void Get_ReadWhenNoItemAvailable_ReturnsNotFound()
+    {
+        // Arrange
+
+        // Act
+
+        // Assert
+    }
+
+    [Fact]
+    public void Get_ReadUnhandledException_ReturnsInternalServerError()
+    {
+        // Arrange
+
+        // Act
+
+        // Assert
     }
 }

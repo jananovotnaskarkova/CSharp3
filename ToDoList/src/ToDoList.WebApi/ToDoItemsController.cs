@@ -7,13 +7,9 @@ using ToDoList.Persistence.Repositories;
 
 [Route("api/[controller]")] //localhost:5000/api/ToDoItems
 [ApiController]
-public class ToDoItemsController : ControllerBase
+public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerBase
 {
-    private readonly IRepository<ToDoItem> repository;
-    public ToDoItemsController(IRepository<ToDoItem> repository)
-    {
-        this.repository = repository;
-    }
+    private readonly IRepository<ToDoItem> repository = repository;
 
     [HttpPost]
     public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request) //pouzijeme DTO = Data Transfer Object
@@ -58,9 +54,9 @@ public class ToDoItemsController : ControllerBase
     }
 
     [HttpGet("{toDoItemId:int}")]
-    public ActionResult<ToDoItemGetResponseDto> ReadById(int toDoItemId)
+    public ActionResult<ToDoItemGetResponseDto>? ReadById(int toDoItemId)
     {
-        ToDoItem itemToGet;
+        ToDoItem? itemToGet;
 
         //try to read an item
         try
@@ -81,7 +77,7 @@ public class ToDoItemsController : ControllerBase
     [HttpPut("{toDoItemId:int}")]
     public ActionResult<ToDoItemGetResponseDto> UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
     {
-        ToDoItem item_updated;
+        ToDoItem? item_updated;
 
         //try to update an item
         try
@@ -94,20 +90,20 @@ public class ToDoItemsController : ControllerBase
         }
 
         //respond to client
-        return (item_updated is not null)
-            ? Ok(ToDoItemGetResponseDto.FromDomain(item_updated)) //200 with data
-            : NotFound(); //404
+        return (item_updated is null)
+            ? NotFound() //404
+            : Ok(ToDoItemGetResponseDto.FromDomain(item_updated)); //200 with data
     }
 
     [HttpDelete("{toDoItemId:int}")]
     public IActionResult DeleteById(int toDoItemId)
     {
-        bool is_deleted;
+        var itemToDelete = ReadById(toDoItemId);
 
         //try to delete an item
         try
         {
-            is_deleted = repository.DeleteById(toDoItemId);
+            repository.DeleteById(toDoItemId);
         }
         catch (Exception ex)
         {
@@ -115,8 +111,8 @@ public class ToDoItemsController : ControllerBase
         }
 
         //respond to client
-        return is_deleted
-            ? NoContent() //204
-            : NotFound(); //404
+        return (itemToDelete is null)
+            ? NotFound() //404
+            : NoContent(); //204
     }
 }
