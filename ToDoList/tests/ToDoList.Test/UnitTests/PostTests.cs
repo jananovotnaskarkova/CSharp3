@@ -2,9 +2,8 @@ namespace ToDoList.Test.UnitTests;
 
 using ToDoList.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using ToDoList.Domain.Models;
-using System.ComponentModel;
 using Microsoft.AspNetCore.Http;
+using NSubstitute;
 
 public class PostTests : ControllerUnitTestBase
 {
@@ -13,15 +12,13 @@ public class PostTests : ControllerUnitTestBase
     [Fact]
     public void Post_CreateValidRequest_ReturnsCreatedAtAction()
     {
-        // Arrange
-        RepositoryMock.Create(toDoItem.ToDomain());
-
         // Act
         var result = Controller.Create(toDoItem);
         var value = result.GetValue();
 
         // Assert
         Assert.IsType<CreatedAtActionResult>(result.Result);
+        RepositoryMock.Received(1).Create(toDoItem);
 
         Assert.NotNull(value);
         Assert.Equal("jmeno", value.Name);
@@ -29,17 +26,17 @@ public class PostTests : ControllerUnitTestBase
         Assert.True(value.IsCompleted);
     }
 
-    // [Fact]
-    // public void Post_CreateUnhandledException_ReturnsInternalServerError()
-    // {
-    //     // Arrange
-    //     RepositoryMock.When(r => r.Create(toDoItem1)).Do(r => throw new Exception());
+    [Fact]
+    public void Post_CreateUnhandledException_ReturnsInternalServerError()
+    {
+        // Arrange
+        RepositoryMock.When(r => r.Create(toDoItem)).Do(r => throw new Exception());
 
-    //     // Act
-    //     var result = Controller.Create(toDoItem);
+        // Act
+        var result = Controller.Create(toDoItem);
 
-    //     // Assert
-    //     Assert.IsType<ObjectResult>(result);
-    //     Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result.Result).StatusCode);
-    // }
+        // Assert
+        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result.Result).StatusCode);
+        RepositoryMock.Received(1).Create(toDoItem);
+    }
 }

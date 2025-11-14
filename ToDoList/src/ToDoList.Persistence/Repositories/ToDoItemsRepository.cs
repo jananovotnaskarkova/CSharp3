@@ -8,8 +8,9 @@ public class ToDoItemsRepository(ToDoItemsContext context) : IRepository<ToDoIte
 {
     public readonly ToDoItemsContext context = context;
 
-    public void Create(ToDoItem item)
+    public void Create(ToDoItemCreateRequestDto request)
     {
+        var item = request.ToDomain();
         context.ToDoItems.Add(item);
         context.SaveChanges();
     }

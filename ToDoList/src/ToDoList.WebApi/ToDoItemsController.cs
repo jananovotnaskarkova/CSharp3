@@ -14,13 +14,10 @@ public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerB
     [HttpPost]
     public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request) //pouzijeme DTO = Data Transfer Object
     {
-        //create domain object from request
-        var item = request.ToDomain();
-
         //try to create an item
         try
         {
-            repository.Create(item);
+            repository.Create(request);
         }
         catch (Exception ex)
         {
@@ -29,8 +26,8 @@ public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerB
 
         //respond to client
         return CreatedAtAction(actionName: nameof(ReadById), // Which method to use to get the resource
-                               routeValues: new { toDoItemId = item.ToDoItemId }, // Parameters needed to call that method
-                               value: ToDoItemGetResponseDto.FromDomain(item) // The created item to return
+                               routeValues: new { toDoItemId = request.ToDomain().ToDoItemId }, // Parameters needed to call that method
+                               value: ToDoItemGetResponseDto.FromDomain(request.ToDomain()) // The created item to return
                                ); //201
     }
 
@@ -50,7 +47,9 @@ public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerB
         }
 
         //respond to client
-        return Ok(itemsToGet.Select(ToDoItemGetResponseDto.FromDomain)); //200 with data
+        return itemsToGet.Any()
+            ? Ok(itemsToGet.Select(ToDoItemGetResponseDto.FromDomain)) //200 with data
+            : NotFound(); //404
     }
 
     [HttpGet("{toDoItemId:int}")]

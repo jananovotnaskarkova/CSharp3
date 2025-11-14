@@ -3,8 +3,6 @@ namespace ToDoList.Test.UnitTests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
-using NSubstitute.ReturnsExtensions;
 using ToDoList.Domain.Models;
 
 public class DeleteTests : ControllerUnitTestBase
@@ -57,7 +55,7 @@ public class DeleteTests : ControllerUnitTestBase
 
         // Assert
         Assert.IsType<ObjectResult>(result);
-        RepositoryMock.Received(1).DeleteById(someId);
         Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result).StatusCode);
+        RepositoryMock.Received(1).DeleteById(someId);
     }
 }
