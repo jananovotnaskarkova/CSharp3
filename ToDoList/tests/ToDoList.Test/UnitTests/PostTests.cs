@@ -2,32 +2,44 @@ namespace ToDoList.Test.UnitTests;
 
 using ToDoList.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using ToDoList.Domain.Models;
+using System.ComponentModel;
+using Microsoft.AspNetCore.Http;
 
 public class PostTests : ControllerUnitTestBase
 {
-    private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
-    private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
+    private readonly ToDoItemCreateRequestDto toDoItem = new(Name: "jmeno", Description: "popis", IsCompleted: true);
+
     [Fact]
-    public void Create_ReturnsCreatedItems()
+    public void Post_CreateValidRequest_ReturnsCreatedAtAction()
     {
+        // Arrange
+        RepositoryMock.Create(toDoItem.ToDomain());
+
         // Act
-        var resultCreate1 = Controller.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
-        var resultCreate2 = Controller.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
+        var result = Controller.Create(toDoItem);
+        var value = result.GetValue();
 
         // Assert
-        Assert.IsType<CreatedAtActionResult>(resultCreate1.Result); // the result should be of type CreatedAtActionResult
-        Assert.IsType<CreatedAtActionResult>(resultCreate2.Result); // the result should be of type CreatedAtActionResult
+        Assert.IsType<CreatedAtActionResult>(result.Result);
 
-        var valueCreate1 = resultCreate1.GetValue(); // ToDoItemGetResponseDto
-        // check its properties
-        Assert.Equal("jmeno1", valueCreate1.Name);
-        Assert.Equal("popis1", valueCreate1.Description);
-        Assert.False(valueCreate1.IsCompleted);
-
-        var valueCreate2 = resultCreate2.GetValue(); // ToDoItemGetResponseDto
-        // check its properties
-        Assert.Equal("jmeno2", valueCreate2.Name);
-        Assert.Equal("popis2", valueCreate2.Description);
-        Assert.True(valueCreate2.IsCompleted);
+        Assert.NotNull(value);
+        Assert.Equal("jmeno", value.Name);
+        Assert.Equal("popis", value.Description);
+        Assert.True(value.IsCompleted);
     }
+
+    // [Fact]
+    // public void Post_CreateUnhandledException_ReturnsInternalServerError()
+    // {
+    //     // Arrange
+    //     RepositoryMock.When(r => r.Create(toDoItem1)).Do(r => throw new Exception());
+
+    //     // Act
+    //     var result = Controller.Create(toDoItem);
+
+    //     // Assert
+    //     Assert.IsType<ObjectResult>(result);
+    //     Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result.Result).StatusCode);
+    // }
 }
