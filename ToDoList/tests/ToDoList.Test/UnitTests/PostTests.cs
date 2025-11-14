@@ -30,13 +30,16 @@ public class PostTests : ControllerUnitTestBase
     public void Post_CreateUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.When(r => r.Create(toDoItem)).Do(r => throw new Exception());
+        RepositoryMock.When(r => r.Create(toDoItem)).Do(r => throw new InvalidOperationException());
 
         // Act
         var result = Controller.Create(toDoItem);
 
         // Assert
-        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result.Result).StatusCode);
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.True(objectResult.StatusCode.HasValue);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
         RepositoryMock.Received(1).Create(toDoItem);
     }
 }

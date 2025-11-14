@@ -18,7 +18,7 @@ public class PutTests : ControllerUnitTestBase
         Description = "novy popis",
         IsCompleted = true
     };
-    int someId = 1;
+    private readonly int someId = 1;
 
     [Fact]
     public void Put_UpdateByIdWhenItemUpdated_ReturnsOk()
@@ -61,13 +61,16 @@ public class PutTests : ControllerUnitTestBase
     public void Put_UpdateByIdUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.UpdateById(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).Throws(new Exception());
+        RepositoryMock.UpdateById(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).Throws(new InvalidOperationException());
 
         // Act
         var result = Controller.UpdateById(someId, toDoItem);
 
         // Assert
-        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result.Result).StatusCode);
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.True(objectResult.StatusCode.HasValue);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
         RepositoryMock.Received(1).UpdateById(someId, toDoItem);
     }
 }

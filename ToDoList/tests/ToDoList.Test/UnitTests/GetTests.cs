@@ -26,7 +26,7 @@ public class GetUnitTests : ControllerUnitTestBase
             IsCompleted = true
         },
     ];
-    int someId = 1;
+    private readonly int someId = 1;
 
     [Fact]
     public void Get_ReadWhenSomeItemAvailable_ReturnsOk()
@@ -64,13 +64,15 @@ public class GetUnitTests : ControllerUnitTestBase
     public void Get_ReadUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.Read().Throws(new Exception());
+        RepositoryMock.Read().Throws(new InvalidOperationException());
 
         // Act
         var result = Controller.Read();
 
         // Assert
-        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result.Result).StatusCode);
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.True(objectResult.StatusCode.HasValue);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
         RepositoryMock.Received(1).Read();
     }
 
@@ -82,6 +84,7 @@ public class GetUnitTests : ControllerUnitTestBase
 
         // Act
         var result = Controller.ReadById(someId);
+        Assert.NotNull(result);
         var value = result.GetValue();
 
         // Assert
@@ -103,6 +106,7 @@ public class GetUnitTests : ControllerUnitTestBase
 
         // Act
         var result = Controller.ReadById(someId);
+        Assert.NotNull(result);
         var value = result.GetValue();
 
         // Assert
@@ -115,13 +119,16 @@ public class GetUnitTests : ControllerUnitTestBase
     public void Get_ReadByIdUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.ReadById(Arg.Any<int>()).Throws(new Exception());
+        RepositoryMock.ReadById(Arg.Any<int>()).Throws(new InvalidOperationException());
 
         // Act
         var result = Controller.ReadById(someId);
 
         // Assert
-        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result.Result).StatusCode);
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.True(objectResult.StatusCode.HasValue);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
         RepositoryMock.Received(1).ReadById(someId);
     }
 }

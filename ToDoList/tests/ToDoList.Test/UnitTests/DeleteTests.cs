@@ -3,17 +3,9 @@ namespace ToDoList.Test.UnitTests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
-using ToDoList.Domain.Models;
 
 public class DeleteTests : ControllerUnitTestBase
 {
-    private readonly ToDoItem item = new()
-    {
-        ToDoItemId = 1,
-        Name = "jmeno",
-        Description = "popis",
-        IsCompleted = false
-    };
     private readonly int someId = 1;
 
     [Fact]
@@ -48,7 +40,7 @@ public class DeleteTests : ControllerUnitTestBase
     public void Delete_AnyItemIdExceptionOccurredDuringDeleteById_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.When(r => r.DeleteById(Arg.Any<int>())).Do(r => throw new Exception());
+        RepositoryMock.When(r => r.DeleteById(Arg.Any<int>())).Do(r => throw new InvalidOperationException());
 
         // Act
         var result = Controller.DeleteById(someId);
