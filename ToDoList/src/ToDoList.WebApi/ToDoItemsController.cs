@@ -98,12 +98,12 @@ public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerB
     [HttpDelete("{toDoItemId:int}")]
     public IActionResult DeleteById(int toDoItemId)
     {
-        var itemToDelete = ReadById(toDoItemId);
+        bool is_deleted;
 
         //try to delete an item
         try
         {
-            repository.DeleteById(toDoItemId);
+            is_deleted = repository.DeleteById(toDoItemId);
         }
         catch (Exception ex)
         {
@@ -111,8 +111,8 @@ public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerB
         }
 
         //respond to client
-        return (itemToDelete is null)
-            ? NotFound() //404
-            : NoContent(); //204
+        return is_deleted
+            ? NoContent() //204
+            : NotFound(); //404
     }
 }

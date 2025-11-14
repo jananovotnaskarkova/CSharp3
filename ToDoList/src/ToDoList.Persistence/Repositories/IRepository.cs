@@ -10,6 +10,6 @@ public interface IRepository<T>
     public IEnumerable<T> Read();
     public T? ReadById(int id);
     public T? UpdateById(int id, TodoItemUpdateRequestDto request);
-    public void DeleteById(int id);
+    public bool DeleteById(int id);
 
 }

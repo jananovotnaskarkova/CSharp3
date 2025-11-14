@@ -33,18 +33,21 @@ public class ToDoItemsRepository(ToDoItemsContext context) : IRepository<ToDoIte
         return item;
     }
 
-    public void DeleteById(int id)
+    public bool DeleteById(int id)
     {
+        bool is_deleted;
         var item = context.ToDoItems.SingleOrDefault(i => i.ToDoItemId == id);
 
         if (item is null)
         {
-            throw new ArgumentOutOfRangeException($"TO DO item with ID {id} not found.");
+            is_deleted = false;
         }
         else
         {
             context.ToDoItems.Remove(item);
             context.SaveChanges();
+            is_deleted = true;
         }
+        return is_deleted;
     }
 }

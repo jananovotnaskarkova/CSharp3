@@ -22,14 +22,13 @@ public class DeleteTests : ControllerUnitTestBase
     public void Delete_ValidItemId_ReturnsNoContent()
     {
         // Arrange
-        RepositoryMock.ReadById(Arg.Any<int>()).Returns(item);
+        RepositoryMock.DeleteById(Arg.Any<int>()).Returns(true);
 
         // Act
         var result = Controller.DeleteById(someId);
 
         // Assert
         Assert.IsType<NoContentResult>(result);
-        RepositoryMock.Received(1).ReadById(someId);
         RepositoryMock.Received(1).DeleteById(someId);
     }
 
@@ -37,31 +36,14 @@ public class DeleteTests : ControllerUnitTestBase
     public void Delete_InvalidItemId_ReturnsNotFound()
     {
         // Arrange
-        RepositoryMock.ReadById(Arg.Any<int>()).ReturnsNull();
+        RepositoryMock.DeleteById(Arg.Any<int>()).Returns(false);
 
         // Act
         var result = Controller.DeleteById(someId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
-        RepositoryMock.Received(1).ReadById(someId);
         RepositoryMock.Received(1).DeleteById(someId);
-    }
-
-    [Fact]
-    public void Delete_AnyItemIdExceptionOccurredDuringReadById_ReturnsInternalServerError()
-    {
-        // Arrange
-        RepositoryMock.ReadById(Arg.Any<int>()).Throws(new Exception());
-
-        // Act
-        var result = Controller.DeleteById(someId);
-
-        // Assert
-        Assert.IsType<ObjectResult>(result);
-        RepositoryMock.Received(1).ReadById(someId);
-        RepositoryMock.Received(1).DeleteById(someId);
-        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result).StatusCode);
     }
 
     [Fact]
@@ -75,7 +57,6 @@ public class DeleteTests : ControllerUnitTestBase
 
         // Assert
         Assert.IsType<ObjectResult>(result);
-        RepositoryMock.Received(1).ReadById(someId);
         RepositoryMock.Received(1).DeleteById(someId);
         Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result).StatusCode);
     }
