@@ -63,6 +63,7 @@ public class GetTests : ControllerTestBase
 
         // Act
         var result = Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
+        Assert.NotNull(result);
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
@@ -88,6 +89,7 @@ public class GetTests : ControllerTestBase
 
         // Act
         var result = Controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
+        Assert.NotNull(result);
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
