@@ -7,24 +7,17 @@ using ToDoList.Persistence.Repositories;
 
 [Route("api/[controller]")] //localhost:5000/api/ToDoItems
 [ApiController]
-public class ToDoItemsController : ControllerBase
+public class ToDoItemsController(IRepository<ToDoItem> repository) : ControllerBase
 {
-    private readonly IRepository<ToDoItem> repository;
-    public ToDoItemsController(IRepository<ToDoItem> repository)
-    {
-        this.repository = repository;
-    }
+    private readonly IRepository<ToDoItem> repository = repository;
 
     [HttpPost]
     public ActionResult<ToDoItemGetResponseDto> Create(ToDoItemCreateRequestDto request) //pouzijeme DTO = Data Transfer Object
     {
-        //create domain object from request
-        var item = request.ToDomain();
-
         //try to create an item
         try
         {
-            repository.Create(item);
+            repository.Create(request);
         }
         catch (Exception ex)
         {
@@ -33,8 +26,8 @@ public class ToDoItemsController : ControllerBase
 
         //respond to client
         return CreatedAtAction(actionName: nameof(ReadById), // Which method to use to get the resource
-                               routeValues: new { toDoItemId = item.ToDoItemId }, // Parameters needed to call that method
-                               value: ToDoItemGetResponseDto.FromDomain(item) // The created item to return
+                               routeValues: new { toDoItemId = request.ToDomain().ToDoItemId }, // Parameters needed to call that method
+                               value: ToDoItemGetResponseDto.FromDomain(request.ToDomain()) // The created item to return
                                ); //201
     }
 
@@ -54,13 +47,15 @@ public class ToDoItemsController : ControllerBase
         }
 
         //respond to client
-        return Ok(itemsToGet.Select(ToDoItemGetResponseDto.FromDomain)); //200 with data
+        return itemsToGet.Any()
+            ? Ok(itemsToGet.Select(ToDoItemGetResponseDto.FromDomain)) //200 with data
+            : NotFound(); //404
     }
 
     [HttpGet("{toDoItemId:int}")]
-    public ActionResult<ToDoItemGetResponseDto> ReadById(int toDoItemId)
+    public ActionResult<ToDoItemGetResponseDto>? ReadById(int toDoItemId)
     {
-        ToDoItem itemToGet;
+        ToDoItem? itemToGet;
 
         //try to read an item
         try
@@ -81,7 +76,7 @@ public class ToDoItemsController : ControllerBase
     [HttpPut("{toDoItemId:int}")]
     public ActionResult<ToDoItemGetResponseDto> UpdateById(int toDoItemId, [FromBody] TodoItemUpdateRequestDto request)
     {
-        ToDoItem item_updated;
+        ToDoItem? item_updated;
 
         //try to update an item
         try
@@ -94,9 +89,9 @@ public class ToDoItemsController : ControllerBase
         }
 
         //respond to client
-        return (item_updated is not null)
-            ? Ok(ToDoItemGetResponseDto.FromDomain(item_updated)) //200 with data
-            : NotFound(); //404
+        return (item_updated is null)
+            ? NotFound() //404
+            : Ok(ToDoItemGetResponseDto.FromDomain(item_updated)); //200 with data
     }
 
     [HttpDelete("{toDoItemId:int}")]
