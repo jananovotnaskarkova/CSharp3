@@ -9,12 +9,9 @@ public class ToDoItemsContext : DbContext
     public ToDoItemsContext(string connectionString = "DataSource=../../data/localdb.db")
     {
         this.connectionString = connectionString;
-        this.Database.Migrate();
+        Database.Migrate();
     }
     public DbSet<ToDoItem> ToDoItems { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite(connectionString);
-    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlite(connectionString);
 }

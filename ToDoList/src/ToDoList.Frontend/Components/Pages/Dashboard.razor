@@ -1,0 +1,37 @@
+﻿
+@using ToDoList.Frontend.Models
+<div>
+<h2>ToDo items dashboard</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Název</th>
+            <th>Popis</th>
+            <th>Dokončeno</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in testData)
+        {
+            <tr>
+            <td>@item.Id</td>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+
+@code {
+    private List<ToDoItemView> testData = new()
+    {
+        new ToDoItemView(1, "Nakoupit potraviny", "Mrkev, syr, cokolada", true),
+        new ToDoItemView(2, "Udelat ukol na kurz", "Ukol z lekce 8", false),
+        new ToDoItemView(3, "Zavolat nasim", "Kdy prijedeme", false),
+        new ToDoItemView(4, "Pohyb", "Jit na prochazku", true),
+        new ToDoItemView(5, "Cist si", "Prolistovat si nove cislo casopisu", false)
+    };
+}

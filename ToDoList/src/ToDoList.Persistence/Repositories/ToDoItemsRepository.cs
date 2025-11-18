@@ -6,7 +6,7 @@ using ToDoList.Domain.Models;
 
 public class ToDoItemsRepository(ToDoItemsContext context) : IRepository<ToDoItem>
 {
-    public readonly ToDoItemsContext context = context;
+    private readonly ToDoItemsContext context = context;
 
     public void Create(ToDoItemCreateRequestDto request)
     {
