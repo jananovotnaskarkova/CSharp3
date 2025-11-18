@@ -6,9 +6,9 @@ using ToDoList.Persistence.Repositories;
 using ToDoList.WebApi;
 public class ControllerTestBase : IDisposable
 {
-    protected readonly ToDoItemsContext Context;
-    protected readonly IRepository<ToDoItem> Repository;
-    protected readonly ToDoItemsController Controller;
+    protected ToDoItemsContext Context { get; private set; }
+    protected IRepository<ToDoItem> Repository { get; private set; }
+    protected ToDoItemsController Controller { get; private set; }
     public ControllerTestBase()
     {
         Context = new ToDoItemsContext("Data Source=../../../IntegrationTests/data/localdb_test.db");
@@ -21,5 +21,6 @@ public class ControllerTestBase : IDisposable
         Context.ToDoItems.RemoveRange(Context.ToDoItems.ToList());
         Context.SaveChanges();
         Context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

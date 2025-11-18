@@ -1,33 +1,53 @@
 namespace ToDoList.Test.UnitTests;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 
 public class DeleteTests : ControllerUnitTestBase
 {
+    private readonly int someId = 1;
+
     [Fact]
-    public void Delete_DeleteOneItemById()
+    public void Delete_ValidItemId_ReturnsNoContent()
     {
         // Arrange
-        RepositoryMock.DeleteById(2).Returns(true);
+        RepositoryMock.DeleteById(Arg.Any<int>()).Returns(true);
 
         // Act
-        var resultDelete = Controller.DeleteById(2); // IActionResult
+        var result = Controller.DeleteById(someId);
 
         // Assert
-        Assert.IsType<NoContentResult>(resultDelete); // the result should be of type NoContentResult
+        Assert.IsType<NoContentResult>(result);
+        RepositoryMock.Received(1).DeleteById(someId);
     }
 
     [Fact]
-    public void Delete_ReturnsNotFound()
+    public void Delete_InvalidItemId_ReturnsNotFound()
     {
         // Arrange
-        RepositoryMock.DeleteById(3).Returns(false);
+        RepositoryMock.DeleteById(Arg.Any<int>()).Returns(false);
 
         // Act
-        var result = Controller.DeleteById(3); // IActionResult
+        var result = Controller.DeleteById(someId);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result); // the result should be of type NotFoundResult
+        Assert.IsType<NotFoundResult>(result);
+        RepositoryMock.Received(1).DeleteById(someId);
+    }
+
+    [Fact]
+    public void Delete_AnyItemIdExceptionOccurredDuringDeleteById_ReturnsInternalServerError()
+    {
+        // Arrange
+        RepositoryMock.When(r => r.DeleteById(Arg.Any<int>())).Do(r => throw new InvalidOperationException());
+
+        // Act
+        var result = Controller.DeleteById(someId);
+
+        // Assert
+        Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result).StatusCode);
+        RepositoryMock.Received(1).DeleteById(someId);
     }
 }
