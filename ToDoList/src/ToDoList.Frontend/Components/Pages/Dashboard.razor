@@ -1,0 +1,128 @@
+﻿@using System.Runtime.InteropServices
+@using ToDoList.Frontend.Models
+<div>
+    <h2>ToDo items dashboard</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Název</th>
+                <th>Popis</th>
+                <th>Dokončeno</th>
+            </tr>
+            <tr>
+                <th>
+                    <button class=@class_button_id @onclick="SortById">Sort by ID</button>
+                </th>
+                <th>
+                    <button class=@class_button_name @onclick="SortByName">Sort by Name</button>
+                </th>
+                <th>
+                    <button class=@class_button_description @onclick="SortByDescription">Sort by Description</button>
+                </th>
+                <th>
+                    <button class=@class_button_not_completed @onclick="() => SortByCompletedFirstCompleted(true)">Not
+                        Completed First</button>
+                    <button class=@class_button_completed
+                        @onclick="() => SortByCompletedFirstCompleted(false)">Completed First</button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in testData)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+</style>
+
+@code {
+    string class_button_id = "btn-success";
+    string class_button_name = "btn-primary";
+    string class_button_description = "btn-primary";
+    string class_button_not_completed = "btn-primary";
+    string class_button_completed = "btn-primary";
+    private List<ToDoItemView> testData = new()
+{
+new ToDoItemView(1, Name: "Koupit darek", "Cokolada", true),
+new ToDoItemView(2, "Udelat ukol na kurz", "Lekce 08", true),
+new ToDoItemView(3, "Koupit hlinu", "Presadit Aeschynanthus", false),
+new ToDoItemView(4, "Pohyb", "Zacvicit si", false),
+new ToDoItemView(5, "Siti", "Dokoncit upravu strihu", false)
+};
+
+    private void SortById()
+    {
+        testData = testData.OrderBy(i => i.Id).ToList();
+        SetButtonClasses("id");
+        StateHasChanged();
+    }
+
+    private void SortByName()
+    {
+        testData = testData.OrderBy(i => i.Name).ToList();
+        SetButtonClasses("name");
+        StateHasChanged();
+    }
+
+    private void SortByDescription()
+    {
+        testData = testData.OrderBy(i => i.Description).ToList();
+        SetButtonClasses("description");
+        StateHasChanged();
+    }
+
+    private void SortByCompletedFirstCompleted(bool state)
+    {
+        if (state)
+        {
+            testData = testData.OrderBy(i => i.IsCompleted).ToList();
+            SetButtonClasses("not_completed");
+        }
+        else
+        {
+            testData = testData.OrderByDescending(i => i.IsCompleted).ToList();
+            SetButtonClasses("completed");
+        }
+        StateHasChanged();
+    }
+
+    private void SetButtonClasses(string activeClass)
+    {
+        class_button_id = activeClass == "id" ? "btn-success" : "btn-primary";
+        class_button_name = activeClass == "name" ? "btn-success" : "btn-primary";
+        class_button_description = activeClass == "description" ? "btn-success" : "btn-primary";
+        class_button_not_completed = activeClass == "not_completed" ? "btn-success" : "btn-primary";
+        class_button_completed = activeClass == "completed" ? "btn-success" : "btn-primary";
+    }
+}

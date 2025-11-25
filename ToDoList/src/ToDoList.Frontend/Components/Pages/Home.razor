@@ -1,0 +1,33 @@
+﻿@page "/"
+@using ToDoList.Frontend.Models
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<h2>Welcome to your new app.</h2>
+
+<b>@GetValue()</b>
+
+<hr />
+
+<p><button @onclick="IncrementCounter">Increment counter</button> Counter: @counter </p>
+
+<hr />
+
+<Dashboard />
+
+@code {
+    private int counter = 1;
+
+    private void IncrementCounter()
+    {
+        counter++;
+    }
+
+    private string GetValue()
+    {
+        return Guid.NewGuid().ToString();
+    }
+}
