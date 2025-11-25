@@ -1,5 +1,9 @@
 ﻿@using System.Runtime.InteropServices
+@using ToDoList.Frontend.Clients
 @using ToDoList.Frontend.Models
+
+@inject IToDoItemsClient toDoItemsClient
+
 <div>
     <h2>ToDo items dashboard</h2>
     <table>
@@ -124,5 +128,10 @@ new ToDoItemView(5, "Siti", "Dokoncit upravu strihu", false)
         class_button_description = activeClass == "description" ? "btn-success" : "btn-primary";
         class_button_not_completed = activeClass == "not_completed" ? "btn-success" : "btn-primary";
         class_button_completed = activeClass == "completed" ? "btn-success" : "btn-primary";
+    }
+
+    protected override void OnInitialized()
+    {
+        testData = toDoItemsClient.ReadItems();
     }
 }
