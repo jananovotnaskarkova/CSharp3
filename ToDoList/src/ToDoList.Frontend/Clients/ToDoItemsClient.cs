@@ -17,7 +17,8 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
             dto.Id,
             dto.Name,
             dto.Description,
-            dto.IsCompleted
+            dto.IsCompleted,
+            dto.Category
             ))];
 
         return toDoItemViews;

@@ -21,7 +21,8 @@ Content-Type: application/json
 {
   "name": "Example New Task",
   "description": "Example New Description",
-  "isCompleted": false
+  "isCompleted": false,
+  "category": "Example Category"
 }
 
 ###
@@ -35,7 +36,8 @@ Content-Type: application/json
 {
   "name": "Updated Task",
   "description": "Updated Description",
-  "isCompleted": false
+  "isCompleted": false,
+  "category": "Updated Category"
 }
 
 ###
