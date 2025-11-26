@@ -39,10 +39,9 @@ public class DeleteTests : ControllerTestBase
         Assert.Single(valueRead); // we expect exactly 1 item remaining
 
         Assert.IsType<NoContentResult>(resultDelete); // the result should be of type NoContentResult
-        Assert.IsType<NoContentResult>(resultDelete); // the result should be of type NoContentResult
 
         // Assert properties of the remaining item
-        var singleItem = valueRead.First();
+        var singleItem = valueRead.Single();
         Assert.Equal(2, singleItem.Id);
         Assert.Equal("jmeno2", singleItem.Name);
         Assert.Equal("popis2", singleItem.Description);
