@@ -21,16 +21,16 @@ public class DeleteTests : ControllerTestBase
     };
 
     [Fact]
-    public void Delete_DeleteOneItemById()
+    public async Task Delete_DeleteOneItemById()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var resultDelete = Controller.DeleteById(1); // IActionResult
-        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultDelete = await Controller.DeleteById(1); // IActionResult
+        var resultRead = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -48,16 +48,16 @@ public class DeleteTests : ControllerTestBase
     }
 
     [Fact]
-    public void Delete_ReturnsNotFound()
+    public async Task Delete_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var resultDelete = Controller.DeleteById(3); // IActionResult
-        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultDelete = await Controller.DeleteById(3); // IActionResult
+        var resultRead = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert

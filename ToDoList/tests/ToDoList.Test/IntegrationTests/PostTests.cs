@@ -8,13 +8,13 @@ public class PostTests : ControllerTestBase
     private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
     private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
     [Fact]
-    public void Create_ReturnsCreatedItems()
+    public async Task Create_ReturnsCreatedItems()
     {
         // Act
-        var resultCreate1 = Controller.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
-        var resultCreate2 = Controller.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
+        var resultCreate1 = await Controller.Create(toDoItem1); // ActionResult<ToDoItemGetResponseDto>
+        var resultCreate2 = await Controller.Create(toDoItem2); // ActionResult<ToDoItemGetResponseDto>
 
-        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var resultRead = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
