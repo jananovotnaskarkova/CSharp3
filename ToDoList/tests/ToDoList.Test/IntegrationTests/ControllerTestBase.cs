@@ -7,7 +7,7 @@ using ToDoList.WebApi;
 public class ControllerTestBase : IDisposable
 {
     protected ToDoItemsContext Context { get; private set; }
-    protected IRepository<ToDoItem> Repository { get; private set; }
+    protected IRepositoryAsync<ToDoItem> Repository { get; private set; }
     protected ToDoItemsController Controller { get; private set; }
     public ControllerTestBase()
     {
@@ -16,11 +16,11 @@ public class ControllerTestBase : IDisposable
         Controller = new ToDoItemsController(Repository);
     }
 
-    public void Dispose()
+    public async void Dispose()
     {
         Context.ToDoItems.RemoveRange(Context.ToDoItems.ToList());
-        Context.SaveChanges();
-        Context.Dispose();
+        await Context.SaveChangesAsync();
+        await Context.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }

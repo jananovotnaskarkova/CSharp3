@@ -130,8 +130,8 @@ new ToDoItemView(5, "Siti", "Dokoncit upravu strihu", false)
         class_button_completed = activeClass == "completed" ? "btn-success" : "btn-primary";
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        testData = toDoItemsClient.ReadItems();
+        testData = await toDoItemsClient.ReadItemsAsync();
     }
 }

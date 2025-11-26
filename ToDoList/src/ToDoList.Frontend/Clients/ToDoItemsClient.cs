@@ -7,12 +7,13 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
 {
     private readonly HttpClient httpClient = httpClient;
 
-    public List<ToDoItemView> ReadItems()
+    public async Task<List<ToDoItemView>> ReadItemsAsync()
     {
         var toDoItemViews = new List<ToDoItemView>();
-        var response = httpClient.GetFromJsonAsync<List<ToDoItemGetResponseDto>>("api/ToDoItems");
+        var response = await httpClient.GetFromJsonAsync<List<ToDoItemGetResponseDto>>("api/ToDoItems")
+            ?? [];
 
-        toDoItemViews = [.. response.Result.Select(dto => new ToDoItemView(
+        toDoItemViews = [.. response.Select(dto => new ToDoItemView(
             dto.Id,
             dto.Name,
             dto.Description,

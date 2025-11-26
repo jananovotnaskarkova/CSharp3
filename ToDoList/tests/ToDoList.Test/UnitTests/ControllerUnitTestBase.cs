@@ -6,11 +6,11 @@ using ToDoList.Persistence.Repositories;
 using ToDoList.WebApi;
 public class ControllerUnitTestBase
 {
-    protected IRepository<ToDoItem> RepositoryMock { get; }
+    protected IRepositoryAsync<ToDoItem> RepositoryMock { get; }
     protected ToDoItemsController Controller { get; }
     public ControllerUnitTestBase()
     {
-        RepositoryMock = Substitute.For<IRepository<ToDoItem>>();
+        RepositoryMock = Substitute.For<IRepositoryAsync<ToDoItem>>();
         Controller = new ToDoItemsController(RepositoryMock);
     }
 }

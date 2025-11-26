@@ -2,6 +2,7 @@ namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
+using System.Linq;
 
 public class DeleteTests : ControllerTestBase
 {
@@ -21,26 +22,27 @@ public class DeleteTests : ControllerTestBase
     };
 
     [Fact]
-    public void Delete_DeleteOneItemById()
+    public async Task Delete_DeleteOneItemById()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var resultDelete = Controller.DeleteById(1); // IActionResult
-        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
-        var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
+        var resultDelete = await Controller.DeleteById(1); // IActionResult
+        var resultRead = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var valueRead = resultRead.Value; // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
         Assert.NotNull(valueRead); // the returned collection should not be null
         Assert.Single(valueRead); // we expect exactly 1 item remaining
 
         Assert.IsType<NoContentResult>(resultDelete); // the result should be of type NoContentResult
+        Assert.IsType<NoContentResult>(resultDelete); // the result should be of type NoContentResult
 
         // Assert properties of the remaining item
-        var singleItem = valueRead.Single();
+        var singleItem = valueRead.First();
         Assert.Equal(2, singleItem.Id);
         Assert.Equal("jmeno2", singleItem.Name);
         Assert.Equal("popis2", singleItem.Description);
@@ -48,17 +50,17 @@ public class DeleteTests : ControllerTestBase
     }
 
     [Fact]
-    public void Delete_ReturnsNotFound()
+    public async Task Delete_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var resultDelete = Controller.DeleteById(3); // IActionResult
-        var resultRead = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
-        var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
+        var resultDelete = await Controller.DeleteById(3); // IActionResult
+        var resultRead = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var valueRead = resultRead.Value; // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
         Assert.NotNull(valueRead); // the returned collection should not be null
