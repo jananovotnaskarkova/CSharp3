@@ -2,7 +2,6 @@ namespace ToDoList.Test.IntegrationTests;
 
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Domain.Models;
-using System.Linq;
 
 public class DeleteTests : ControllerTestBase
 {
