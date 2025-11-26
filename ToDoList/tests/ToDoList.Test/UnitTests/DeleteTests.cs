@@ -9,45 +9,46 @@ public class DeleteTests : ControllerUnitTestBase
     private readonly int someId = 1;
 
     [Fact]
-    public void Delete_ValidItemId_ReturnsNoContent()
+    public async Task Delete_ValidItemId_ReturnsNoContent()
     {
         // Arrange
         RepositoryMock.DeleteById(Arg.Any<int>()).Returns(true);
 
         // Act
-        var result = Controller.DeleteById(someId);
+        var result = await Controller.DeleteById(someId);
 
         // Assert
         Assert.IsType<NoContentResult>(result);
-        RepositoryMock.Received(1).DeleteById(someId);
+        await RepositoryMock.Received(1).DeleteById(someId);
     }
 
     [Fact]
-    public void Delete_InvalidItemId_ReturnsNotFound()
+    public async Task Delete_InvalidItemId_ReturnsNotFound()
     {
         // Arrange
         RepositoryMock.DeleteById(Arg.Any<int>()).Returns(false);
 
         // Act
-        var result = Controller.DeleteById(someId);
+        var result = await Controller.DeleteById(someId);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
-        RepositoryMock.Received(1).DeleteById(someId);
+        await RepositoryMock.Received(1).DeleteById(someId);
     }
 
     [Fact]
-    public void Delete_AnyItemIdExceptionOccurredDuringDeleteById_ReturnsInternalServerError()
+    public async Task Delete_AnyItemIdExceptionOccurredDuringDeleteById_ReturnsInternalServerError()
     {
         // Arrange
         RepositoryMock.When(r => r.DeleteById(Arg.Any<int>())).Do(r => throw new InvalidOperationException());
 
         // Act
-        var result = Controller.DeleteById(someId);
+        var result = await Controller.DeleteById(someId);
 
         // Assert
-        Assert.IsType<ObjectResult>(result);
-        Assert.Equal(StatusCodes.Status500InternalServerError, ((ObjectResult)result).StatusCode);
-        RepositoryMock.Received(1).DeleteById(someId);
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.True(objectResult.StatusCode.HasValue);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
+        await RepositoryMock.Received(1).DeleteById(someId);
     }
 }

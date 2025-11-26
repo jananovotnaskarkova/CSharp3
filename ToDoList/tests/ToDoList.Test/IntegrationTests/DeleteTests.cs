@@ -32,7 +32,7 @@ public class DeleteTests : ControllerTestBase
         // Act
         var resultDelete = await Controller.DeleteById(1); // IActionResult
         var resultRead = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
-        var valueRead = resultRead.Value; // IEnumerable<ToDoItemGetResponseDto>?
+        var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
         Assert.NotNull(valueRead); // the returned collection should not be null
@@ -60,7 +60,7 @@ public class DeleteTests : ControllerTestBase
         // Act
         var resultDelete = await Controller.DeleteById(3); // IActionResult
         var resultRead = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
-        var valueRead = resultRead.Value; // IEnumerable<ToDoItemGetResponseDto>?
+        var valueRead = resultRead.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
         Assert.NotNull(valueRead); // the returned collection should not be null

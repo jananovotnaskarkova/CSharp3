@@ -21,15 +21,15 @@ public class GetTests : ControllerTestBase
     };
 
     [Fact]
-    public void Get_AllItems_ReturnsAllItems()
+    public async Task Get_AllItems_ReturnsAllItems()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var result = Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
+        var result = await Controller.Read(); // ActionResult<IEnumerable<ToDoItemGetResponseDto>>
         var value = result.GetValue(); // IEnumerable<ToDoItemGetResponseDto>?
 
         // Assert
@@ -54,15 +54,15 @@ public class GetTests : ControllerTestBase
     }
 
     [Fact]
-    public void Get_ItemById_ReturnsItemById()
+    public async Task Get_ItemById_ReturnsItemById()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var result = Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
+        var result = await Controller.ReadById(1); // ActionResult<ToDoItemGetResponseDto>
         Assert.NotNull(result);
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
@@ -79,16 +79,16 @@ public class GetTests : ControllerTestBase
     }
 
     [Fact]
-    public void Get_ItemById_ReturnsNotFound()
+    public async Task Get_ItemById_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
 
         // Act
-        var result = Controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
+        var result = await Controller.ReadById(3); // ActionResult<ToDoItemGetResponseDto>
         Assert.NotNull(result);
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 

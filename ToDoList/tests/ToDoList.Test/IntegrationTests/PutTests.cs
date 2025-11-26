@@ -23,15 +23,15 @@ public class PutTests : ControllerTestBase
     private readonly TodoItemUpdateRequestDto toDoItem3 = new(Name: "jmeno3", Description: "popis3", IsCompleted: false);
 
     [Fact]
-    public void Update_ReturnsUpdatedItems()
+    public async Task Update_ReturnsUpdatedItems()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var result = Controller.UpdateById(2, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
+        var result = await Controller.UpdateById(2, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
@@ -47,15 +47,15 @@ public class PutTests : ControllerTestBase
     }
 
     [Fact]
-    public void Update_ReturnsNotFound()
+    public async Task Update_ReturnsNotFound()
     {
         // Arrange
-        Context.ToDoItems.Add(toDoItem1);
-        Context.ToDoItems.Add(toDoItem2);
-        Context.SaveChanges();
+        await Context.ToDoItems.AddAsync(toDoItem1);
+        await Context.ToDoItems.AddAsync(toDoItem2);
+        await Context.SaveChangesAsync();
 
         // Act
-        var result = Controller.UpdateById(3, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
+        var result = await Controller.UpdateById(3, toDoItem3); // ActionResult<ToDoItemGetResponseDto>
         var value = result.GetValue(); // ToDoItemGetResponseDto?
 
         // Assert
