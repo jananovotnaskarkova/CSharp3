@@ -7,7 +7,7 @@ using NSubstitute;
 
 public class PostTests : ControllerUnitTestBase
 {
-    private readonly ToDoItemCreateRequestDto toDoItem = new(Name: "jmeno", Description: "popis", IsCompleted: true);
+    private readonly ToDoItemCreateRequestDto toDoItem = new(Name: "jmeno", Description: "popis", IsCompleted: true, Category: "kategorie");
 
     [Fact]
     public async Task Post_CreateValidRequest_ReturnsCreatedAtAction()

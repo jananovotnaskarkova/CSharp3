@@ -22,8 +22,12 @@ namespace ToDoList.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsCompleted")
@@ -35,7 +39,7 @@ namespace ToDoList.Persistence.Migrations
 
                     b.HasKey("ToDoItemId");
 
-                    b.ToTable("ToDoItems", (string)null);
+                    b.ToTable("ToDoItems");
                 });
 #pragma warning restore 612, 618
         }

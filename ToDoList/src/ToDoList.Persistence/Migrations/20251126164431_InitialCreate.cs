@@ -17,8 +17,9 @@ namespace ToDoList.Persistence.Migrations
                     ToDoItemId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    IsCompleted = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Description = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    IsCompleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Category = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

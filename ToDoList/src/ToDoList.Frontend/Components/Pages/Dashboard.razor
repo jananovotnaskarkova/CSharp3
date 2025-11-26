@@ -13,6 +13,7 @@
                 <th>Název</th>
                 <th>Popis</th>
                 <th>Dokončeno</th>
+                <th>Kategorie</th>
             </tr>
             <tr>
                 <th>
@@ -30,6 +31,9 @@
                     <button class=@class_button_completed
                         @onclick="() => SortByCompletedFirstCompleted(false)">Completed First</button>
                 </th>
+                <th>
+                    <button class=@class_button_category @onclick="SortByCategory">Sort by Category</button>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +44,7 @@
                     <td>@item.Name</td>
                     <td>@item.Description</td>
                     <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
+                    <td>@item.Category</td>
                 </tr>
             }
         </tbody>
@@ -76,13 +81,14 @@
     string class_button_description = "btn-primary";
     string class_button_not_completed = "btn-primary";
     string class_button_completed = "btn-primary";
+    string class_button_category = "btn-primary";
     private List<ToDoItemView> testData = new()
 {
-new ToDoItemView(1, Name: "Koupit darek", "Cokolada", true),
-new ToDoItemView(2, "Udelat ukol na kurz", "Lekce 08", true),
-new ToDoItemView(3, "Koupit hlinu", "Presadit Aeschynanthus", false),
-new ToDoItemView(4, "Pohyb", "Zacvicit si", false),
-new ToDoItemView(5, "Siti", "Dokoncit upravu strihu", false)
+new ToDoItemView(1, Name: "Koupit darek", "Cokolada", true, "Navsteva"),
+new ToDoItemView(2, "Udelat ukol na kurz", "Lekce 08", true, "Vzdelavani"),
+new ToDoItemView(3, "Koupit hlinu", "Presadit Aeschynanthus", false, "Kvetiny"),
+new ToDoItemView(4, "Pohyb", "Zacvicit si", false, "Pohyb"),
+new ToDoItemView(5, "Siti", "Dokoncit upravu strihu", false, "Odpocinek")
 };
 
     private void SortById()
@@ -121,6 +127,13 @@ new ToDoItemView(5, "Siti", "Dokoncit upravu strihu", false)
         StateHasChanged();
     }
 
+    private void SortByCategory()
+    {
+        testData = testData.OrderBy(i => i.Category).ToList();
+        SetButtonClasses("category");
+        StateHasChanged();
+    }
+
     private void SetButtonClasses(string activeClass)
     {
         class_button_id = activeClass == "id" ? "btn-success" : "btn-primary";
@@ -128,6 +141,7 @@ new ToDoItemView(5, "Siti", "Dokoncit upravu strihu", false)
         class_button_description = activeClass == "description" ? "btn-success" : "btn-primary";
         class_button_not_completed = activeClass == "not_completed" ? "btn-success" : "btn-primary";
         class_button_completed = activeClass == "completed" ? "btn-success" : "btn-primary";
+        class_button_category = activeClass == "category" ? "btn-success" : "btn-primary";
     }
 
     protected override async Task OnInitializedAsync()

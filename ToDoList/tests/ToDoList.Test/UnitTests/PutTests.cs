@@ -10,7 +10,7 @@ using ToDoList.Domain.Models;
 
 public class PutTests : ControllerUnitTestBase
 {
-    private readonly TodoItemUpdateRequestDto toDoItem = new(Name: "nove jmeno", Description: "novy popis", IsCompleted: true);
+    private readonly TodoItemUpdateRequestDto toDoItem = new(Name: "nove jmeno", Description: "novy popis", IsCompleted: true, Category: "nova kategorie");
     private readonly ToDoItem updatedItem = new()
     {
         ToDoItemId = 1,

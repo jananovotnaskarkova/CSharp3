@@ -5,8 +5,8 @@ using ToDoList.Domain.DTOs;
 
 public class PostTests : ControllerTestBase
 {
-    private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false);
-    private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true);
+    private readonly ToDoItemCreateRequestDto toDoItem1 = new(Name: "jmeno1", Description: "popis1", IsCompleted: false, Category: "kategorie1");
+    private readonly ToDoItemCreateRequestDto toDoItem2 = new(Name: "jmeno2", Description: "popis2", IsCompleted: true, Category: "kategorie2");
     [Fact]
     public async Task Create_ReturnsCreatedItems()
     {
