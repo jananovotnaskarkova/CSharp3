@@ -32,7 +32,7 @@ public class GetUnitTests : ControllerUnitTestBase
     public async Task Get_ReadWhenSomeItemAvailable_ReturnsOk()
     {
         // Arrange
-        RepositoryMock.Read().Returns(list);
+        RepositoryMock.ReadAsync().Returns(list);
 
         // Act
         var result = await Controller.Read();
@@ -42,14 +42,14 @@ public class GetUnitTests : ControllerUnitTestBase
         Assert.NotNull(value);
         Assert.Equal(2, value.Count());
         Assert.IsType<OkObjectResult>(result.Result);
-        await RepositoryMock.Received(1).Read();
+        await RepositoryMock.Received(1).ReadAsync();
     }
 
     [Fact]
     public async Task Get_ReadWhenNoItemAvailable_ReturnsNotFound()
     {
         // Arrange
-        RepositoryMock.Read().Returns([]);
+        RepositoryMock.ReadAsync().Returns([]);
 
         // Act
         var result = await Controller.Read();
@@ -57,14 +57,14 @@ public class GetUnitTests : ControllerUnitTestBase
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
-        await RepositoryMock.Received(1).Read();
+        await RepositoryMock.Received(1).ReadAsync();
     }
 
     [Fact]
     public async Task Get_ReadUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.Read().Throws(new InvalidOperationException());
+        RepositoryMock.ReadAsync().Throws(new InvalidOperationException());
 
         // Act
         var result = await Controller.Read();
@@ -73,14 +73,14 @@ public class GetUnitTests : ControllerUnitTestBase
         var objectResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.True(objectResult.StatusCode.HasValue);
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
-        await RepositoryMock.Received(1).Read();
+        await RepositoryMock.Received(1).ReadAsync();
     }
 
     [Fact]
     public async Task Get_ReadByIdWhenSomeItemAvailable_ReturnsOk()
     {
         // Arrange
-        RepositoryMock.ReadById(Arg.Any<int>()).Returns(list[0]);
+        RepositoryMock.ReadByIdAsync(Arg.Any<int>()).Returns(list[0]);
 
         // Act
         var result = await Controller.ReadById(someId);
@@ -90,7 +90,7 @@ public class GetUnitTests : ControllerUnitTestBase
         // Assert
         Assert.NotNull(value);
         Assert.IsType<OkObjectResult>(result.Result);
-        await RepositoryMock.Received(1).ReadById(someId);
+        await RepositoryMock.Received(1).ReadByIdAsync(someId);
 
         Assert.Equal(someId, value.Id);
         Assert.Equal("jmeno1", value.Name);
@@ -102,7 +102,7 @@ public class GetUnitTests : ControllerUnitTestBase
     public async Task Get_ReadByIdWhenItemIsNull_ReturnsNotFound()
     {
         // Arrange
-        RepositoryMock.ReadById(Arg.Any<int>()).ReturnsNull();
+        RepositoryMock.ReadByIdAsync(Arg.Any<int>()).ReturnsNull();
 
         // Act
         var result = await Controller.ReadById(someId);
@@ -112,14 +112,14 @@ public class GetUnitTests : ControllerUnitTestBase
         // Assert
         Assert.Null(value);
         Assert.IsType<NotFoundResult>(result.Result);
-        await RepositoryMock.Received(1).ReadById(someId);
+        await RepositoryMock.Received(1).ReadByIdAsync(someId);
     }
 
     [Fact]
     public async Task Get_ReadByIdUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.ReadById(Arg.Any<int>()).Throws(new InvalidOperationException());
+        RepositoryMock.ReadByIdAsync(Arg.Any<int>()).Throws(new InvalidOperationException());
 
         // Act
         var result = await Controller.ReadById(someId);
@@ -129,6 +129,6 @@ public class GetUnitTests : ControllerUnitTestBase
         var objectResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.True(objectResult.StatusCode.HasValue);
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
-        await RepositoryMock.Received(1).ReadById(someId);
+        await RepositoryMock.Received(1).ReadByIdAsync(someId);
     }
 }

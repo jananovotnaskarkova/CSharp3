@@ -24,7 +24,7 @@ public class PutTests : ControllerUnitTestBase
     public async Task Put_UpdateByIdWhenItemUpdated_ReturnsOk()
     {
         // Arrange
-        RepositoryMock.UpdateById(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).Returns(updatedItem);
+        RepositoryMock.UpdateByIdAsync(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).Returns(updatedItem);
 
         // Act
         var result = await Controller.UpdateById(someId, toDoItem);
@@ -33,7 +33,7 @@ public class PutTests : ControllerUnitTestBase
         // Assert
         Assert.NotNull(value);
         Assert.IsType<OkObjectResult>(result.Result);
-        await RepositoryMock.Received(1).UpdateById(someId, toDoItem);
+        await RepositoryMock.Received(1).UpdateByIdAsync(someId, toDoItem);
 
         Assert.Equal(someId, value.Id);
         Assert.Equal(updatedItem.Name, value.Name);
@@ -45,7 +45,7 @@ public class PutTests : ControllerUnitTestBase
     public async Task Put_UpdateByIdWhenIdNotFound_ReturnsNotFound()
     {
         // Arrange
-        RepositoryMock.UpdateById(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).ReturnsNull();
+        RepositoryMock.UpdateByIdAsync(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).ReturnsNull();
 
         // Act
         var result = await Controller.UpdateById(someId, toDoItem);
@@ -54,14 +54,14 @@ public class PutTests : ControllerUnitTestBase
         // Assert
         Assert.Null(value);
         Assert.IsType<NotFoundResult>(result.Result);
-        await RepositoryMock.Received(1).UpdateById(someId, toDoItem);
+        await RepositoryMock.Received(1).UpdateByIdAsync(someId, toDoItem);
     }
 
     [Fact]
     public async Task Put_UpdateByIdUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.UpdateById(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).Throws(new InvalidOperationException());
+        RepositoryMock.UpdateByIdAsync(Arg.Any<int>(), Arg.Any<TodoItemUpdateRequestDto>()).Throws(new InvalidOperationException());
 
         // Act
         var result = await Controller.UpdateById(someId, toDoItem);
@@ -71,6 +71,6 @@ public class PutTests : ControllerUnitTestBase
         var objectResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.True(objectResult.StatusCode.HasValue);
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
-        await RepositoryMock.Received(1).UpdateById(someId, toDoItem);
+        await RepositoryMock.Received(1).UpdateByIdAsync(someId, toDoItem);
     }
 }
