@@ -10,18 +10,18 @@ public class ToDoItemsRepository(ToDoItemsContext context) : IRepositoryAsync<To
 {
     private readonly ToDoItemsContext context = context;
 
-    public async Task Create(ToDoItemCreateRequestDto request)
+    public async Task CreateAsync(ToDoItemCreateRequestDto request)
     {
         var item = request.ToDomain();
         await context.ToDoItems.AddAsync(item);
         await context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<ToDoItem>> Read() => await context.ToDoItems.ToListAsync();
+    public async Task<IEnumerable<ToDoItem>> ReadAsync() => await context.ToDoItems.ToListAsync();
 
-    public async Task<ToDoItem?> ReadById(int id) => await context.ToDoItems.FindAsync(id);
+    public async Task<ToDoItem?> ReadByIdAsync(int id) => await context.ToDoItems.FindAsync(id);
 
-    public async Task<ToDoItem?> UpdateById(int id, TodoItemUpdateRequestDto request)
+    public async Task<ToDoItem?> UpdateByIdAsync(int id, TodoItemUpdateRequestDto request)
     {
         var itemUpdated = request.ToDomain();
         var item = await context.ToDoItems.SingleOrDefaultAsync(i => i.ToDoItemId == id);
@@ -37,7 +37,7 @@ public class ToDoItemsRepository(ToDoItemsContext context) : IRepositoryAsync<To
         return item;
     }
 
-    public async Task<bool> DeleteById(int id)
+    public async Task<bool> DeleteByIdAsync(int id)
     {
         bool is_deleted;
         var item = await context.ToDoItems.SingleOrDefaultAsync(i => i.ToDoItemId == id);
