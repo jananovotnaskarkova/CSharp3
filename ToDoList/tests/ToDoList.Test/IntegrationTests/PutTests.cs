@@ -20,7 +20,7 @@ public class PutTests : ControllerTestBase
         Description = "popis2",
         IsCompleted = true
     };
-    private readonly TodoItemUpdateRequestDto toDoItem3 = new(Name: "jmeno3", Description: "popis3", IsCompleted: false);
+    private readonly TodoItemUpdateRequestDto toDoItem3 = new(Name: "jmeno3", Description: "popis3", IsCompleted: false, Category: "kategorie3");
 
     [Fact]
     public async Task Update_ReturnsUpdatedItems()

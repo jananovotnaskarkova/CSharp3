@@ -7,7 +7,7 @@ using NSubstitute;
 
 public class PostTests : ControllerUnitTestBase
 {
-    private readonly ToDoItemCreateRequestDto toDoItem = new(Name: "jmeno", Description: "popis", IsCompleted: true);
+    private readonly ToDoItemCreateRequestDto toDoItem = new(Name: "jmeno", Description: "popis", IsCompleted: true, Category: "kategorie");
 
     [Fact]
     public async Task Post_CreateValidRequest_ReturnsCreatedAtAction()
@@ -18,7 +18,7 @@ public class PostTests : ControllerUnitTestBase
 
         // Assert
         Assert.IsType<CreatedAtActionResult>(result.Result);
-        await RepositoryMock.Received(1).Create(toDoItem);
+        await RepositoryMock.Received(1).CreateAsync(toDoItem);
 
         Assert.NotNull(value);
         Assert.Equal("jmeno", value.Name);
@@ -30,7 +30,7 @@ public class PostTests : ControllerUnitTestBase
     public async Task Post_CreateUnhandledException_ReturnsInternalServerError()
     {
         // Arrange
-        RepositoryMock.When(r => r.Create(toDoItem)).Do(r => throw new InvalidOperationException());
+        RepositoryMock.When(r => r.CreateAsync(toDoItem)).Do(r => throw new InvalidOperationException());
 
         // Act
         var result = await Controller.Create(toDoItem);
@@ -40,6 +40,6 @@ public class PostTests : ControllerUnitTestBase
         var objectResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.True(objectResult.StatusCode.HasValue);
         Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode.Value);
-        await RepositoryMock.Received(1).Create(toDoItem);
+        await RepositoryMock.Received(1).CreateAsync(toDoItem);
     }
 }

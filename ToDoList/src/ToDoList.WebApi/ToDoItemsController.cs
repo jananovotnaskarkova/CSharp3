@@ -17,7 +17,7 @@ public class ToDoItemsController(IRepositoryAsync<ToDoItem> repository) : Contro
         //try to create an item
         try
         {
-            await repository.Create(request);
+            await repository.CreateAsync(request);
         }
         catch (Exception ex)
         {
@@ -39,7 +39,7 @@ public class ToDoItemsController(IRepositoryAsync<ToDoItem> repository) : Contro
         //try to read all items
         try
         {
-            itemsToGet = await repository.Read();
+            itemsToGet = await repository.ReadAsync();
         }
         catch (Exception ex)
         {
@@ -60,7 +60,7 @@ public class ToDoItemsController(IRepositoryAsync<ToDoItem> repository) : Contro
         //try to read an item
         try
         {
-            itemToGet = await repository.ReadById(toDoItemId);
+            itemToGet = await repository.ReadByIdAsync(toDoItemId);
         }
         catch (Exception ex)
         {
@@ -81,7 +81,7 @@ public class ToDoItemsController(IRepositoryAsync<ToDoItem> repository) : Contro
         //try to update an item
         try
         {
-            item_updated = await repository.UpdateById(toDoItemId, request);
+            item_updated = await repository.UpdateByIdAsync(toDoItemId, request);
         }
         catch (Exception ex)
         {
@@ -102,7 +102,7 @@ public class ToDoItemsController(IRepositoryAsync<ToDoItem> repository) : Contro
         //try to delete an item
         try
         {
-            is_deleted = await repository.DeleteById(toDoItemId);
+            is_deleted = await repository.DeleteByIdAsync(toDoItemId);
         }
         catch (Exception ex)
         {

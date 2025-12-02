@@ -10,7 +10,7 @@ using ToDoList.Persistence;
 namespace ToDoList.Persistence.Migrations
 {
     [DbContext(typeof(ToDoItemsContext))]
-    [Migration("20251021173447_InitialCreate")]
+    [Migration("20251126164431_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,8 +25,12 @@ namespace ToDoList.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsCompleted")
