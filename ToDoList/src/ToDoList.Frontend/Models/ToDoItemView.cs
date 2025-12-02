@@ -1,3 +1,10 @@
 namespace ToDoList.Frontend.Models;
 
-public record ToDoItemView(int Id, string Name, string Description, bool IsCompleted, string Category);
+public class ToDoItemView(int id, string name, string description, bool isCompleted, string category)
+{
+    public int Id { get; set; } = id;
+    public string Name { get; set; } = name;
+    public string Description { get; set; } = description;
+    public bool IsCompleted { get; set; } = isCompleted;
+    public string Category { get; set; } = category;
+}
