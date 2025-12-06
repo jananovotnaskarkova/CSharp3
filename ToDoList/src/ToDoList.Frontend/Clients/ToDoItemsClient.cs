@@ -43,4 +43,12 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
         var itemRequest = new TodoItemUpdateRequestDto(item.Name, item.Description, item.IsCompleted, item.Category);
         var response = await httpClient.PutAsJsonAsync($"api/ToDoItems/{item.Id}", itemRequest);
     }
+
+    public async Task DeleteItemAsync(int itemId) => await httpClient.DeleteAsync($"api/ToDoItems/{itemId}");
+
+    public async Task CreateItemAsync(ToDoItemView item)
+    {
+        var itemRequest = new ToDoItemCreateRequestDto(item.Name, item.Description, item.IsCompleted, item.Category);
+        var response = await httpClient.PostAsJsonAsync($"api/ToDoItems", itemRequest);
+    }
 }

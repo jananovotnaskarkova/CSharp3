@@ -1,13 +1,14 @@
 ﻿@page "/editToDoItem/{ItemId:int}"
 @using ToDoList.Frontend.Clients
 @using ToDoList.Frontend.Models
+@using Microsoft.AspNetCore.Components.Forms
 
 @inject IToDoItemsClient toDoItemsClient
 @inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
 
-<b>Upravit ToDo položku č. @ItemId</b>
+<h2>Upravit úkol č. @ItemId</h2>
 
 @if (ToDoItemModel != null)
 {
@@ -24,12 +25,20 @@
             <label for="IsCompleted" class="form-label">Dokončený</label>
             <InputCheckbox id="IsCompleted" @bind-Value="ToDoItemModel.IsCompleted" />
         </div>
+        <div class="mb-3">
+            <label for="Category" class="form-label">Kategorie</label>
+            <InputText id="Category" @bind-Value="ToDoItemModel.Category" class="form-control" />
+        </div>
+        <div>
+            <span class="text-danger">@errorMessage</span>
+        </div>
         <button class="btn btn-primary" type="submit">Odeslat</button>
     </EditForm>
 }
 
-
 @code {
+    string errorMessage = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         ToDoItemModel = await toDoItemsClient.ReadItemByIdAsync(ItemId);
@@ -43,10 +52,25 @@
 
     public async Task Submit()
     {
-        if (ToDoItemModel != null)
+        if (ToDoItemModel == null)
+            return;
+
+        if (ToDoItemModel.Name != string.Empty && ToDoItemModel.Description != string.Empty)
         {
             await toDoItemsClient.UpdateItemAsync(ToDoItemModel);
             NavigationManager.NavigateTo("/");
+        }
+        if (ToDoItemModel.Name == string.Empty && ToDoItemModel.Description != string.Empty)
+        {
+            errorMessage = "Název nesmí být prázdný.";
+        }
+        if (ToDoItemModel.Description == string.Empty && ToDoItemModel.Name != string.Empty)
+        {
+            errorMessage = "Popis nesmí být prázdný.";
+        }
+        if (ToDoItemModel.Name == string.Empty && ToDoItemModel.Description == string.Empty)
+        {
+            errorMessage = "Název a popis nesmí být prázdné.";
         }
     }
 }

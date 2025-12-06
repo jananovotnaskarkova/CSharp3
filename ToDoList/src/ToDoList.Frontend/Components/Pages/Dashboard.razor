@@ -5,30 +5,28 @@
 @inject IToDoItemsClient toDoItemsClient
 @inject NavigationManager NavigationManager
 
+<button class="btn btn-warning mb-3" @onclick="AddItem">Přidat nový úkol</button>
+
 <div>
-    <h2>ToDo items dashboard</h2>
     <table class="table table-hover">
         <thead class="table-light">
             <tr>
-                <th>ID<br>
-                    <button class=@class_button_id @onclick="SortById">Sort by ID</button>
+                <th>
+                    <button class=@class_button_id @onclick="SortById">ID</button>
                 </th>
-                <th>Název<br>
-                    <button class=@class_button_name @onclick="SortByName">Sort by Name</button>
+                <th>
+                    <button class=@class_button_name @onclick="SortByName">Název</button>
                 </th>
-                <th>Popis<br>
-                    <button class=@class_button_description @onclick="SortByDescription">Sort by Description</button>
+                <th>
+                    <button class=@class_button_description @onclick="SortByDescription">Popis</button>
                 </th>
-                <th>Dokončeno<br>
-                    <button class=@class_button_not_completed @onclick="() => SortByCompletedFirstCompleted(true)">Not
-                        Completed First</button>
-                    <button class=@class_button_completed
-                        @onclick="() => SortByCompletedFirstCompleted(false)">Completed First</button>
+                <th>
+                    <button class=@class_button_completed @onclick="SortByCompletedFirstCompleted">Dokončeno</button>
                 </th>
-                <th>Kategorie<br>
-                    <button class=@class_button_category @onclick="SortByCategory">Sort by Category</button>
+                <th>
+                    <button class=@class_button_category @onclick="SortByCategory">Kategorie</button>
                 </th>
-                <th>Actions</th>
+                <th>Akce</th>
             </tr>
         </thead>
         <tbody>
@@ -38,9 +36,14 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>@item.Description</td>
-                    <td>@(item.IsCompleted ? "Dokonceny" : "Nedokonceny")</td>
+                    <td>@(item.IsCompleted ? "Dokončený" : "Nedokončený")</td>
                     <td>@item.Category</td>
-                    <td><button class="btn btn-secondary" @onclick="() => EditItem(item)">Edit</button></td>
+                    <td>
+                        <button class="btn btn-secondary" @onclick="() => EditItem(item)">Upravit</button>
+                        <button class="btn btn-secondary" @onclick="() => DeleteItem(item)">Smazat</button>
+                        <button class="btn btn-secondary" @onclick="() => ChangeIsCompletedStatus(item)">Změnit
+                            stav</button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -78,18 +81,10 @@
         StateHasChanged();
     }
 
-    private void SortByCompletedFirstCompleted(bool state)
+    private void SortByCompletedFirstCompleted()
     {
-        if (state)
-        {
-            testData = testData.OrderBy(i => i.IsCompleted).ToList();
-            SetButtonClasses("not_completed");
-        }
-        else
-        {
-            testData = testData.OrderByDescending(i => i.IsCompleted).ToList();
-            SetButtonClasses("completed");
-        }
+        testData = testData.OrderByDescending(i => i.IsCompleted).ToList();
+        SetButtonClasses("completed");
         StateHasChanged();
     }
 
@@ -117,6 +112,21 @@
     private void EditItem(ToDoItemView item)
     {
         NavigationManager.NavigateTo($"editToDoItem/{item.Id}");
+    }
+    private void AddItem()
+    {
+        NavigationManager.NavigateTo($"addToDoItem");
+    }
+    private void DeleteItem(ToDoItemView item)
+    {
+        toDoItemsClient.DeleteItemAsync(item.Id);
+        testData.Remove(item);
+    }
+    private void ChangeIsCompletedStatus(ToDoItemView item)
+    {
+        item.IsCompleted = !item.IsCompleted;
+        toDoItemsClient.UpdateItemAsync(item);
+        StateHasChanged();
     }
     protected override async Task OnInitializedAsync()
     {
