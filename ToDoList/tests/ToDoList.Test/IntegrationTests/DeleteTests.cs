@@ -10,14 +10,16 @@ public class DeleteTests : ControllerTestBase
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
-        IsCompleted = false
+        IsCompleted = false,
+        Category = "kategorie1"
     };
     private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
         Description = "popis2",
-        IsCompleted = true
+        IsCompleted = true,
+        Category = "kategorie2"
     };
 
     [Fact]
@@ -45,6 +47,7 @@ public class DeleteTests : ControllerTestBase
         Assert.Equal("jmeno2", singleItem.Name);
         Assert.Equal("popis2", singleItem.Description);
         Assert.True(singleItem.IsCompleted);
+        Assert.Equal("kategorie2", singleItem.Category);
     }
 
     [Fact]
