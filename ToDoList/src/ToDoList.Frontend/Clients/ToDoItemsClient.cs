@@ -17,13 +17,14 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
             {
                 return toDoItemViews;
             }
-            toDoItemViews = [.. response.Select(dto => new ToDoItemView(
-            dto.Id,
-            dto.Name,
-            dto.Description,
-            dto.IsCompleted,
-            dto.Category
-            ))];
+            toDoItemViews = [.. response.Select(dto => new ToDoItemView
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Description = dto.Description,
+                IsCompleted = dto.IsCompleted,
+                Category = dto.Category
+            })];
         }
         catch (Exception e)
         {
@@ -37,13 +38,14 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
         {
             var response = await httpClient.GetFromJsonAsync<ToDoItemGetResponseDto>($"api/ToDoItems/{itemId}")
                 ?? throw new InvalidOperationException($"ToDoItem with id {itemId} not found.");
-            var toDoItem = new ToDoItemView(
-                response.Id,
-                response.Name,
-                response.Description,
-                response.IsCompleted,
-                response.Category
-            );
+            var toDoItem = new ToDoItemView
+            {
+                Id = response.Id,
+                Name = response.Name,
+                Description = response.Description,
+                IsCompleted = response.IsCompleted,
+                Category = response.Category
+            };
             return toDoItem;
         }
         catch (Exception e)
@@ -57,7 +59,7 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
     {
         try
         {
-            var itemRequest = new TodoItemUpdateRequestDto(item.Name, item.Description, item.IsCompleted, item.Category);
+            var itemRequest = new TodoItemUpdateRequestDto(item.Name, item.Description, item.IsCompleted, item.Category ?? string.Empty);
             var response = await httpClient.PutAsJsonAsync($"api/ToDoItems/{item.Id}", itemRequest);
         }
         catch (Exception e)
@@ -83,7 +85,7 @@ public class ToDoItemsClient(HttpClient httpClient) : IToDoItemsClient
     {
         try
         {
-            var itemRequest = new ToDoItemCreateRequestDto(item.Name, item.Description, item.IsCompleted, item.Category);
+            var itemRequest = new ToDoItemCreateRequestDto(item.Name, item.Description, item.IsCompleted, item.Category ?? string.Empty);
             var response = await httpClient.PostAsJsonAsync($"api/ToDoItems", itemRequest);
         }
         catch (Exception e)

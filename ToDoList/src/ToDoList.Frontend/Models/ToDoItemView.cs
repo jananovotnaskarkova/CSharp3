@@ -1,10 +1,15 @@
 namespace ToDoList.Frontend.Models;
 
-public class ToDoItemView(int id, string name, string description, bool isCompleted, string category)
+using System.ComponentModel.DataAnnotations;
+
+public class ToDoItemView
 {
-    public int Id { get; set; } = id;
-    public string Name { get; set; } = name;
-    public string Description { get; set; } = description;
-    public bool IsCompleted { get; set; } = isCompleted;
-    public string Category { get; set; } = category;
+    public int Id { get; set; }
+    [Required(ErrorMessage = "Je třeba zadat název úkolu.")]
+    public required string Name { get; set; }
+    [Required(ErrorMessage = "Je třeba vyplnit popis úkolu.")]
+    [StringLength(250, ErrorMessage = "Popis úkolu nesmí být delší než 250 znaků.")]
+    public required string Description { get; set; }
+    public bool IsCompleted { get; set; }
+    public string? Category { get; set; }
 }

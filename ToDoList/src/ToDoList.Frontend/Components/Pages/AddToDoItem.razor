@@ -10,14 +10,17 @@
 
 <h2>Přidat nový úkol</h2>
 
-<EditForm Model="ToDoItemModel" FormName="AddToDoItem" OnSubmit="Submit">
+<EditForm Model="ToDoItemModel" FormName="AddToDoItem" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
     <div class="mb-3">
         <label for="Name" class="form-label">Název</label>
-        <InputText id="Name" @bind-Value="ToDoItemModel.Name" class="form-control" />
+        <InputText id="Name" @bind-Value="ToDoItemModel.Name" class="form-control w-25" />
+        <ValidationMessage For="() => ToDoItemModel.Name" />
     </div>
     <div class="mb-3">
         <label for="Description" class="form-label">Popis</label>
-        <InputText id="Description" @bind-Value="ToDoItemModel.Description" class="form-control" />
+        <InputText id="Description" @bind-Value="ToDoItemModel.Description" class="form-control w-25" />
+        <ValidationMessage For="() => ToDoItemModel.Description" />
     </div>
     <div class="mb-3">
         <label for="IsCompleted" class="form-label">Dokončený</label>
@@ -25,7 +28,7 @@
     </div>
     <div class="mb-3">
         <label for="Category" class="form-label">Kategorie</label>
-        <InputText id="Category" @bind-Value="ToDoItemModel.Category" class="form-control" />
+        <InputText id="Category" @bind-Value="ToDoItemModel.Category" class="form-control w-25" />
     </div>
     <div>
         <span class="text-danger">@errorMessage</span>
@@ -36,31 +39,18 @@
 @code {
     string errorMessage = string.Empty;
 
-    public ToDoItemView ToDoItemModel = new ToDoItemView(
-    id: 0,
-    name: string.Empty,
-    description: string.Empty,
-    isCompleted: false,
-    category: string.Empty);
+    public ToDoItemView ToDoItemModel { get; set; } = new ToDoItemView
+    {
+        Name = string.Empty,
+        Description = string.Empty,
+        IsCompleted = false,
+        Category = string.Empty
+    };
+
 
     public async Task Submit()
     {
-        if (ToDoItemModel.Name != string.Empty && ToDoItemModel.Description != string.Empty)
-        {
-            await toDoItemsClient.CreateItemAsync(ToDoItemModel);
-            NavigationManager.NavigateTo("/");
-        }
-        if (ToDoItemModel.Name == string.Empty && ToDoItemModel.Description != string.Empty)
-        {
-            errorMessage = "Název nesmí být prázdný.";
-        }
-        if (ToDoItemModel.Description == string.Empty && ToDoItemModel.Name != string.Empty)
-        {
-            errorMessage = "Popis nesmí být prázdný.";
-        }
-        if (ToDoItemModel.Name == string.Empty && ToDoItemModel.Description == string.Empty)
-        {
-            errorMessage = "Název a popis nesmí být prázdné.";
-        }
+        await toDoItemsClient.CreateItemAsync(ToDoItemModel);
+        NavigationManager.NavigateTo("/");
     }
 }
