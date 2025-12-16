@@ -16,7 +16,8 @@ public class PutTests : ControllerUnitTestBase
         ToDoItemId = 1,
         Name = "nove jmeno",
         Description = "novy popis",
-        IsCompleted = true
+        IsCompleted = true,
+        Category = "nova kategorie"
     };
     private readonly int someId = 1;
 
@@ -39,6 +40,7 @@ public class PutTests : ControllerUnitTestBase
         Assert.Equal(updatedItem.Name, value.Name);
         Assert.Equal(updatedItem.Description, value.Description);
         Assert.True(value.IsCompleted);
+        Assert.Equal(updatedItem.Category, value.Category);
     }
 
     [Fact]

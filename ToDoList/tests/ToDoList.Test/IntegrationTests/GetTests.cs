@@ -10,14 +10,16 @@ public class GetTests : ControllerTestBase
         ToDoItemId = 1,
         Name = "jmeno1",
         Description = "popis1",
-        IsCompleted = false
+        IsCompleted = false,
+        Category = "kategorie1"
     };
     private readonly ToDoItem toDoItem2 = new()
     {
         ToDoItemId = 2,
         Name = "jmeno2",
         Description = "popis2",
-        IsCompleted = true
+        IsCompleted = true,
+        Category = "kategorie2"
     };
 
     [Fact]
@@ -44,6 +46,7 @@ public class GetTests : ControllerTestBase
         Assert.Equal("jmeno1", firstToDo.Name);
         Assert.Equal("popis1", firstToDo.Description);
         Assert.False(firstToDo.IsCompleted);
+        Assert.Equal("kategorie1", firstToDo.Category);
 
         var lastToDo = value.Last(); // get the last item
         // check its properties
@@ -51,6 +54,7 @@ public class GetTests : ControllerTestBase
         Assert.Equal("jmeno2", lastToDo.Name);
         Assert.Equal("popis2", lastToDo.Description);
         Assert.True(lastToDo.IsCompleted);
+        Assert.Equal("kategorie2", lastToDo.Category);
     }
 
     [Fact]
@@ -76,6 +80,7 @@ public class GetTests : ControllerTestBase
         Assert.Equal("jmeno1", value.Name);
         Assert.Equal("popis1", value.Description);
         Assert.False(value.IsCompleted);
+        Assert.Equal("kategorie1", value.Category);
     }
 
     [Fact]

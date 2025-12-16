@@ -24,6 +24,7 @@ public class PostTests : ControllerUnitTestBase
         Assert.Equal("jmeno", value.Name);
         Assert.Equal("popis", value.Description);
         Assert.True(value.IsCompleted);
+        Assert.Equal("kategorie", value.Category);
     }
 
     [Fact]

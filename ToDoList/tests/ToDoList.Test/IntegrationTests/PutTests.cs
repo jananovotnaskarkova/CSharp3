@@ -44,6 +44,7 @@ public class PutTests : ControllerTestBase
         Assert.Equal("jmeno3", value.Name);
         Assert.Equal("popis3", value.Description);
         Assert.False(value.IsCompleted);
+        Assert.Equal("kategorie3", value.Category);
     }
 
     [Fact]

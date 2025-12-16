@@ -30,6 +30,7 @@ public class PostTests : ControllerTestBase
         Assert.Equal("jmeno1", valueCreate1.Name);
         Assert.Equal("popis1", valueCreate1.Description);
         Assert.False(valueCreate1.IsCompleted);
+        Assert.Equal("kategorie1", valueCreate1.Category);
 
         var valueCreate2 = resultCreate2.GetValue(); // ToDoItemGetResponseDto
         // check its properties
@@ -37,5 +38,6 @@ public class PostTests : ControllerTestBase
         Assert.Equal("jmeno2", valueCreate2.Name);
         Assert.Equal("popis2", valueCreate2.Description);
         Assert.True(valueCreate2.IsCompleted);
+        Assert.Equal("kategorie2", valueCreate2.Category);
     }
 }

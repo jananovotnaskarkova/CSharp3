@@ -16,14 +16,16 @@ public class GetUnitTests : ControllerUnitTestBase
             ToDoItemId = 1,
             Name = "jmeno1",
             Description = "popis1",
-            IsCompleted = false
+            IsCompleted = false,
+            Category = "kategorie1"
         },
         new()
         {
             ToDoItemId = 2,
             Name = "jmeno2",
             Description = "popis2",
-            IsCompleted = true
+            IsCompleted = true,
+            Category = "kategorie2"
         },
     ];
     private readonly int someId = 1;
@@ -96,6 +98,7 @@ public class GetUnitTests : ControllerUnitTestBase
         Assert.Equal("jmeno1", value.Name);
         Assert.Equal("popis1", value.Description);
         Assert.False(value.IsCompleted);
+        Assert.Equal("kategorie1", value.Category);
     }
 
     [Fact]
